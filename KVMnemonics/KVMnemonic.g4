@@ -7,14 +7,21 @@ mnemonic: separator* (instruction (separator operand)* separator* NEWLINE?);
 separator: SEPARATOR;
 
 // 命令語
-instruction: IDENTIFIER | IDENTIFIER suffix | IDENTIFIER calc_operator suffix;
-calc_operator: PLUS | MINUS | MUL_OP_REF | DIV | EQ | LT | GT | RSHIFT | LSHIFT;
+instruction: IDENTIFIER | IDENTIFIER suffix | IDENTIFIER arith_operator suffix;
+arith_operator: ARITH_PLUS
+                | ARITH_MINUS
+                | MUL_OP_REF
+                | ARITH_DIV
+                | ARITH_EQ
+                | ARITH_LT
+                | ARITH_GT
+                | ARITH_RSHIFT
+                | ARITH_LSHIFT;
+suffix: DOT_SUFFIX;
 
 // オペランド
 operand: device
-        | int_immediate
-        | fp_immediate
-        | str_immediate
+        | immediate
         | OPERAND_UNDEFINED;            //???
 
 // デバイス、ラベル
@@ -33,10 +40,12 @@ scope: SCOPE_LOCAL;
 reference_operator: MUL_OP_REF;
 
 // 即値
-str_immediate: STRING_IMMEDIATE;
+immediate:        | int_immediate
+                  | fp_immediate
+                  | str_immediate;
 int_immediate:  DEC_NUMBER | HEX_NUMBER;
 fp_immediate: FP_DECIMAL | FP_EXPONENTIAL | DOT_SEGMENT;
-suffix: DOT_SUFFIX;
+str_immediate: STRING_IMMEDIATE;
 
 /* 部分マッチする字句 */
 DOT_SEGMENT: DOT NUMBER;
@@ -44,14 +53,14 @@ DOT_SUFFIX: DOT(D | L |  S | U | F | D F);
 ROPERATOR_INDEX: COLLON;
 SCOPE_LOCAL: ATMARK;
 MUL_OP_REF: ASTERISK;
-PLUS: '+';
-MINUS: '-';
-DIV: '/';
-EQ: '=';
-LT: '<';
-GT: '>';
-RSHIFT: '>>';
-LSHIFT: '<<';
+ARITH_PLUS: '+';
+ARITH_MINUS: '-';
+ARITH_DIV: '/';
+ARITH_EQ: '=';
+ARITH_LT: '<';
+ARITH_GT: '>';
+ARITH_RSHIFT: '>>';
+ARITH_LSHIFT: '<<';
 PREFIX_OLD_INDIRECT: SHARP;
 DEV_TM: T M;
 NUMBER: [0-9]+;
