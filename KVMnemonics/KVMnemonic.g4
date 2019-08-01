@@ -8,7 +8,7 @@ separator: SEPARATOR;
 
 // 命令語
 instruction: IDENTIFIER | IDENTIFIER suffix | IDENTIFIER calc_operator suffix;
-calc_operator: PLUS | MINUS | MUL_OP_REF | DIV | EQ | LT | GT | RSHIFT | LSHIFT;
+calc_operator: ARITH_OPERATOR;
 
 // オペランド
 operand: device
@@ -41,6 +41,7 @@ suffix: DOT_SUFFIX;
 /* 部分マッチする字句 */
 DOT_SEGMENT: DOT NUMBER;
 DOT_SUFFIX: DOT(D | L |  S | U | F | D F);
+ARITH_OPERATOR: PLUS | MINUS | MUL_OP_REF | DIV | EQ | LT | GT | RSHIFT | LSHIFT;
 ROPERATOR_INDEX: COLLON;
 SCOPE_LOCAL: ATMARK;
 MUL_OP_REF: ASTERISK;
