@@ -8,7 +8,7 @@ separator: SEPARATOR;
 
 // 命令語
 instruction: IDENTIFIER | IDENTIFIER suffix | IDENTIFIER calc_operator suffix;
-calc_operator: ARITH_OPERATOR;
+calc_operator: PLUS | MINUS | MUL_OP_REF | DIV | EQ | LT | GT | RSHIFT | LSHIFT;
 
 // オペランド
 operand: device
@@ -41,10 +41,17 @@ suffix: DOT_SUFFIX;
 /* 部分マッチする字句 */
 DOT_SEGMENT: DOT NUMBER;
 DOT_SUFFIX: DOT(D | L |  S | U | F | D F);
-ARITH_OPERATOR: PLUS | MINUS | MUL_OP_REF | DIV | EQ | LT | GT | RSHIFT | LSHIFT;
 ROPERATOR_INDEX: COLLON;
 SCOPE_LOCAL: ATMARK;
 MUL_OP_REF: ASTERISK;
+PLUS: '+';
+MINUS: '-';
+DIV: '/';
+EQ: '=';
+LT: '<';
+GT: '>';
+RSHIFT: '>>';
+LSHIFT: '<<';
 PREFIX_OLD_INDIRECT: SHARP;
 DEV_TM: T M;
 NUMBER: [0-9]+;
@@ -68,15 +75,7 @@ fragment COLLON: ':';
 fragment ATMARK: '@';
 fragment SHARP: '#';
 fragment SEMICOLLON: ';';
-fragment PLUS: '+';
-fragment MINUS: '-';
 fragment ASTERISK: '*';
-fragment DIV: '/';
-fragment EQ: '=';
-fragment LT: '<';
-fragment GT: '>';
-fragment RSHIFT: '>>';
-fragment LSHIFT: '<<';
 fragment ESC_QUOTE: QUOTE QUOTE;
 fragment QUOTE: '"';
 fragment DOT: '.';
