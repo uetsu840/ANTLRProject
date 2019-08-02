@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/KVMnemonics.iml" filepath="$PROJECT_DIR$/.idea/KVMnemonics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Mnemonics.iml" filepath="$PROJECT_DIR$/.idea/Mnemonics.iml" />
     </modules>
   </component>
 </project>
