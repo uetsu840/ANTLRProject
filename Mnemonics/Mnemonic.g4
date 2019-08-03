@@ -177,8 +177,8 @@ IMM_DEC_NUMBER_SIGN                         // 10進即値(プレフィクスな
 IMM_DEC_NUMBER_RAW                          // 10進即値(プレフィクス、符号もなし)
     : DEC_NUMBER;
 FP_EXPONENTIAL                              // 指数形式浮動小数点即値
-    : DECIMAL_HEAD? SIGN? (DEC_NUMBER)? DOT DEC_NUMBER DEC_DIGIT *E SIGN? DEC_NUMBER
-    | DECIMAL_HEAD? SIGN? DEC_NUMBER (DOT DEC_NUMBER)? DEC_DIGIT *E SIGN? DEC_NUMBER
+    : DECIMAL_HEAD? SIGN? (DEC_NUMBER)? DOT DEC_NUMBER E SIGN? DEC_NUMBER
+    | DECIMAL_HEAD? SIGN? DEC_NUMBER (DOT DEC_NUMBER)? E SIGN? DEC_NUMBER
     ;
 FP_DECIMAL                                  // 浮動小数点即値
     : DECIMAL_HEAD? SIGN? DEC_DIGIT* DOT DEC_DIGIT*;
