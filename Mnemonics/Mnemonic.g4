@@ -47,11 +47,16 @@ operand: device
 /* デバイス、ラベル */
 device
     : device_old_indirect                           // #TM10
+    | device_z                                      // Z10
     | device_normal                                 // *@DM0, DM10.0
     | rly_or_int_immediate
     ;
 
-device_old_indirect     //旧間接参照
+device_z
+    : INDEX_DEVICE      // インデックスデバイス
+    ;
+
+device_old_indirect     // 旧間接参照
     : OLD_INDIRECT
     ;
 
@@ -62,7 +67,8 @@ device_normal           // デバイス
     ;
 
 device_wbit             // デバイス(ワード中ビット)
-    : device_content bitpos                         // DM10.0
+                        //   ・インデックス修飾不可
+    : device_raw bitpos                             // DM10.0
     ;
 
 device_content          // デバイス(通常)
@@ -76,9 +82,8 @@ device_raw              // デバイス(生)
     ;
 
 index_value             // インデックス修飾
-    : int_immediate
-    | IMM_HEX_NUMBER
-    | device_content                               // インデックス修飾
+    : index_value_old
+    | device_z
     ;
 
 bitpos                  // ワード中ビットのビット位置
@@ -178,10 +183,12 @@ IMM_DEC_NUMBER_RAW                          // 10進即値(プレフィクス、
     : DEC_NUMBER;
 FP_EXPONENTIAL                              // 指数形式浮動小数点即値
     : DECIMAL_HEAD? SIGN? (DEC_NUMBER)? DOT DEC_NUMBER E SIGN? DEC_NUMBER
-    | DECIMAL_HEAD? SIGN? DEC_NUMBER (DOT DEC_NUMBER)? E SIGN? DEC_NUMBER
+    | DECIMAL_HEAD? SIGN? DEC_NUMBER DOT? DEC_NUMBER? E SIGN? DEC_NUMBER
     ;
 FP_DECIMAL                                  // 浮動小数点即値
     : DECIMAL_HEAD? SIGN? DEC_DIGIT* DOT DEC_DIGIT*;
+INDEX_DEVICE
+    : Z DEC_NUMBER;
 OLD_INDIRECT                                // 旧間接参照 (#TM)
     : PREFIX_OLD_INDIRECT DEV_TM DEC_NUMBER;
 IDENTIFIER
