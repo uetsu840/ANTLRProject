@@ -78,7 +78,7 @@ device_content          // デバイス(通常)
 
 device_raw              // デバイス(生)
     : IDENTIFIER
-    | (scope IDENTIFIER)              // DM0, @DM0
+    | (scope IDENTIFIER)                            // DM0, @DM0
     ;
 
 index_value             // インデックス修飾
@@ -163,7 +163,7 @@ PREFIX_OLD_INDIRECT : SHARP;
 DEV_TM          : T M;
 
 /* 改行・セパレータ */
-NEWLINE         : ('\r' | '\n');
+NEWLINE         : ('\r')?'\n';
 SEPARATOR       : (' ' | '\t')+;
 
 /* 単独でidentifierにマッチする字句 */

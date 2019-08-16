@@ -1,0 +1,5 @@
+paiza/**
+.vscode/ipch/**
+*.ilk
+*.pdb
+.vs/
