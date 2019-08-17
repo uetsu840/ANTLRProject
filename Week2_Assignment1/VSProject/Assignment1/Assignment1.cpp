@@ -283,10 +283,9 @@ public:
 	antlrcpp::Any visitFunction_call(calcParser::Function_callContext* ctx) override
 	{
 		auto op = visit(ctx->expr()).as<result>();
-		const char *pcFuncName = ctx->SYMBOL()->getText().c_str();
-		if (0 == _stricmp("sin", pcFuncName)) {
+		if (0 == _stricmp("sin", ctx->SYMBOL()->getText().c_str())) {
 			return result{ true, (double)sin(op.value.getDoubleVal()) };
-		} else if (0 == _stricmp("cos", pcFuncName)) {
+		} else if (0 == _stricmp("cos", ctx->SYMBOL()->getText().c_str())) {
 			return result{ true, (double)cos(op.value.getDoubleVal()) };
 		}
 		return result{ false, 0 };
