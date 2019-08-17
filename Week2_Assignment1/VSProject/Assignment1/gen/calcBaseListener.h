@@ -31,17 +31,17 @@ public:
   virtual void enterExpr_multiplicative(calcParser::Expr_multiplicativeContext * /*ctx*/) override { }
   virtual void exitExpr_multiplicative(calcParser::Expr_multiplicativeContext * /*ctx*/) override { }
 
-  virtual void enterExpr_unary(calcParser::Expr_unaryContext * /*ctx*/) override { }
-  virtual void exitExpr_unary(calcParser::Expr_unaryContext * /*ctx*/) override { }
-
   virtual void enterExpr_none(calcParser::Expr_noneContext * /*ctx*/) override { }
   virtual void exitExpr_none(calcParser::Expr_noneContext * /*ctx*/) override { }
 
   virtual void enterParen_expr(calcParser::Paren_exprContext * /*ctx*/) override { }
   virtual void exitParen_expr(calcParser::Paren_exprContext * /*ctx*/) override { }
 
-  virtual void enterNum(calcParser::NumContext * /*ctx*/) override { }
-  virtual void exitNum(calcParser::NumContext * /*ctx*/) override { }
+  virtual void enterFp_num(calcParser::Fp_numContext * /*ctx*/) override { }
+  virtual void exitFp_num(calcParser::Fp_numContext * /*ctx*/) override { }
+
+  virtual void enterInteger(calcParser::IntegerContext * /*ctx*/) override { }
+  virtual void exitInteger(calcParser::IntegerContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

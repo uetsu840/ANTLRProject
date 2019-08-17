@@ -29,13 +29,13 @@ public:
 
     virtual antlrcpp::Any visitExpr_multiplicative(calcParser::Expr_multiplicativeContext *context) = 0;
 
-    virtual antlrcpp::Any visitExpr_unary(calcParser::Expr_unaryContext *context) = 0;
-
     virtual antlrcpp::Any visitExpr_none(calcParser::Expr_noneContext *context) = 0;
 
     virtual antlrcpp::Any visitParen_expr(calcParser::Paren_exprContext *context) = 0;
 
-    virtual antlrcpp::Any visitNum(calcParser::NumContext *context) = 0;
+    virtual antlrcpp::Any visitFp_num(calcParser::Fp_numContext *context) = 0;
+
+    virtual antlrcpp::Any visitInteger(calcParser::IntegerContext *context) = 0;
 
 
 };

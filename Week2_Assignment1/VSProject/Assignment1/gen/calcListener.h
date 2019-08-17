@@ -29,17 +29,17 @@ public:
   virtual void enterExpr_multiplicative(calcParser::Expr_multiplicativeContext *ctx) = 0;
   virtual void exitExpr_multiplicative(calcParser::Expr_multiplicativeContext *ctx) = 0;
 
-  virtual void enterExpr_unary(calcParser::Expr_unaryContext *ctx) = 0;
-  virtual void exitExpr_unary(calcParser::Expr_unaryContext *ctx) = 0;
-
   virtual void enterExpr_none(calcParser::Expr_noneContext *ctx) = 0;
   virtual void exitExpr_none(calcParser::Expr_noneContext *ctx) = 0;
 
   virtual void enterParen_expr(calcParser::Paren_exprContext *ctx) = 0;
   virtual void exitParen_expr(calcParser::Paren_exprContext *ctx) = 0;
 
-  virtual void enterNum(calcParser::NumContext *ctx) = 0;
-  virtual void exitNum(calcParser::NumContext *ctx) = 0;
+  virtual void enterFp_num(calcParser::Fp_numContext *ctx) = 0;
+  virtual void exitFp_num(calcParser::Fp_numContext *ctx) = 0;
+
+  virtual void enterInteger(calcParser::IntegerContext *ctx) = 0;
+  virtual void exitInteger(calcParser::IntegerContext *ctx) = 0;
 
 
 };

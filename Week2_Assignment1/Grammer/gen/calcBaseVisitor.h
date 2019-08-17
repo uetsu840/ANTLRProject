@@ -35,10 +35,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExpr_unary(calcParser::Expr_unaryContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitExpr_none(calcParser::Expr_noneContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -47,7 +43,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitNum(calcParser::NumContext *ctx) override {
+  virtual antlrcpp::Any visitFp_num(calcParser::Fp_numContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitInteger(calcParser::IntegerContext *ctx) override {
     return visitChildren(ctx);
   }
 

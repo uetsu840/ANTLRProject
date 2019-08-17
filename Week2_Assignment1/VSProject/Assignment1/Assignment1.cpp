@@ -21,14 +21,144 @@ int pow_int(int a, int t) {
 	return b;
 }
 
+struct any_number {
+	enum NUM_TYPE {
+		TYPE_INT = 0,
+		TYPE_DOUBLE,
+		TYPE_ERR
+	};
+	
+	const double D_EPS = 1.0e-12;
+		
+	int m_x;
+	double m_d;
+	NUM_TYPE m_t;
+
+	double getDoubleVal() const
+	{
+		if (TYPE_INT == m_t) {
+			return (double)m_x;
+		} else if (TYPE_DOUBLE == m_t) {
+			return m_d;
+		} else {
+			return 0;
+		}
+	}
+
+	any_number(double num = 0) : m_x(0)  , m_d(num), m_t(TYPE_DOUBLE) {};
+	any_number(int num = 0)    : m_x(num), m_d(0),   m_t(TYPE_INT)    {};
+
+	any_number& operator+=(const any_number a) {
+		if ((TYPE_INT == this->m_t) && (TYPE_INT == a.m_t)) {
+			m_x = this->m_x + a.m_x;
+		} else {
+			m_d = getDoubleVal() + a.getDoubleVal();
+			m_t = TYPE_DOUBLE;
+		}
+		return *this;
+	}
+
+	any_number& operator-= (const any_number a) {
+		if ((TYPE_INT == this->m_t) && (TYPE_INT == a.m_t)) {
+			m_x = this->m_x - a.m_x;
+		} else {
+			m_d = getDoubleVal() - a.getDoubleVal();
+			m_t = TYPE_DOUBLE;
+		}
+		return *this;
+	}
+
+	any_number& operator*= (const any_number a) {
+		if ((TYPE_INT == this->m_t) && (TYPE_INT == a.m_t)) {
+			m_x = this->m_x * a.m_x;
+		} else {
+			m_d = getDoubleVal() * a.getDoubleVal();
+			m_t = TYPE_DOUBLE;
+		}
+		return *this;
+	}
+	any_number& operator/= (const any_number a) {
+		bool bResultInt = false;
+
+		if (any_number(0) == a) {
+			m_t = TYPE_ERR;
+			return *this;
+		}
+
+		if ((TYPE_INT == this->m_t)
+			&& (TYPE_INT == a.m_t)) {
+			if (0 == this->m_x % a.m_x) {
+				bResultInt = true;
+			}
+		}
+
+		if (bResultInt) {
+
+		} else {
+			m_d = getDoubleVal() / a.getDoubleVal();
+			m_t = TYPE_DOUBLE;
+		}
+		return *this;
+	}
+	bool operator== (const any_number &a)
+	{
+		if ((TYPE_INT == m_t) && (TYPE_INT == a.m_t)) {
+			return (m_x == a.m_x);
+		} else {
+			return (abs(getDoubleVal() - a.getDoubleVal()) < D_EPS);
+		}
+	}
+
+	any_number operator+ (const any_number a) const {
+		any_number res(*this);
+		return (res += a);
+	}
+	any_number operator- (const any_number a) const {
+		any_number res(*this);
+		return (res -= a);
+	}
+	any_number operator* (const any_number a) const {
+		any_number res(*this);
+		return (res *= a);
+	}
+	any_number operator/ (const any_number a) const {
+		any_number res(*this);
+		return (res /= a);
+	}
+
+	string getStr() {
+		string str;
+
+		switch (m_t) {
+		case TYPE_INT:
+			str = to_string(m_x);
+			break;
+		case TYPE_DOUBLE:
+			str = to_string(m_d);
+			break;
+		case TYPE_ERR:
+			break;
+		}
+		return str;
+	}
+};
+
+any_number pow(const any_number a, const any_number b) {
+	if ((any_number::TYPE_INT == a.m_t) && (any_number::TYPE_INT == b.m_t)) {
+		return pow_int(a.m_x, b.m_x);
+	}
+	else {
+		return pow(a.getDoubleVal(), b.getDoubleVal());
+	}
+}
 
 struct result {
 	bool success;
-	int value;
+	any_number value;
 
 	void debugPrint(void)
 	{
-		printf("%s: %d\n", success? "true" : "false", value);
+		printf("%s: %s\n", success? "true" : "false", value.getStr().c_str());
 	}
 };
 
@@ -109,35 +239,28 @@ public:
 			return rhs;
 		}
 
-		return result{ true, pow_int(lhs.value, rhs.value) };
-	}
-
-	antlrcpp::Any visitExpr_unary(
-		calcParser::Expr_unaryContext* ctx) override
-	{
-		auto num = visit(ctx->expr()).as<result>();
-		switch (ctx->op->getType()) {
-		case calcLexer::PLUS:
-			return result{ true, num.value };
-		case calcLexer::MINUS:
-			return result{ true, (-1) * num.value };
-		default:
-			return result{ false, 0 };
-		}
-
-
-
+		return result{ true, pow(lhs.value, rhs.value) };
 	}
 
 	antlrcpp::Any visitParen_expr(calcParser::Paren_exprContext* ctx) override {
 		return visit(ctx->expr());
 	}
 
-	antlrcpp::Any visitNum(calcParser::NumContext* ctx) override
+	antlrcpp::Any visitInteger(calcParser::IntegerContext* ctx) override
 	{
-		switch(ctx->getStart()->getType()) {
+		switch (ctx->getStart()->getType()) {
 		case calcLexer::UINT:
 			return result{ true, atoi(ctx->UINT()->getText().c_str()) };
+		default:
+			return result{ false, 0 };
+		}
+	}
+
+	antlrcpp::Any visitFp_num(calcParser::Fp_numContext* ctx) override
+	{
+		switch(ctx->getStart()->getType()) {
+		case calcLexer::FP_NUM:
+			return result{ true, atof(ctx->FP_NUM()->getText().c_str()) };
 		default:
 			return result{ false, 0 };
 		}
@@ -188,6 +311,9 @@ const string strTestFileList[] =
 	"../test/int_mul2.txt",
 	"../test/int_pow1.txt",
 	"../test/int_pow2.txt",
+	"../test/fp_add1.txt",
+	"../test/fp_add2.txt",
+	"../test/fp_div1.txt",
 };
 
 
@@ -199,6 +325,7 @@ int main(int argc, const char* argv[])
 		printf("%s\n", file.c_str());
 		calc.ExecFile(file.c_str());
 	}
+	return 0;
 }
 
 
