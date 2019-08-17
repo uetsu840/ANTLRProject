@@ -10,6 +10,7 @@ FP_NUM=9
 UINT=10
 SYMBOL=11
 WS=12
+STR_IMM=13
 '('=1
 ')'=2
 '*'=3

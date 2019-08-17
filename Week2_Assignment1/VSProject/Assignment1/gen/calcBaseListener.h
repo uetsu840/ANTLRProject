@@ -49,6 +49,9 @@ public:
   virtual void enterInteger(calcParser::IntegerContext * /*ctx*/) override { }
   virtual void exitInteger(calcParser::IntegerContext * /*ctx*/) override { }
 
+  virtual void enterString(calcParser::StringContext * /*ctx*/) override { }
+  virtual void exitString(calcParser::StringContext * /*ctx*/) override { }
+
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }
   virtual void exitEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

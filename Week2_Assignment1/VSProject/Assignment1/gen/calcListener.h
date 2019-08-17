@@ -47,6 +47,9 @@ public:
   virtual void enterInteger(calcParser::IntegerContext *ctx) = 0;
   virtual void exitInteger(calcParser::IntegerContext *ctx) = 0;
 
+  virtual void enterString(calcParser::StringContext *ctx) = 0;
+  virtual void exitString(calcParser::StringContext *ctx) = 0;
+
 
 };
 

@@ -13,7 +13,8 @@ class  calcLexer : public antlr4::Lexer {
 public:
   enum {
     OPEN_PAREN = 1, CLOSE_PAREN = 2, ASTERISK = 3, SLASH = 4, PLUS = 5, 
-    MINUS = 6, HAT = 7, DOT = 8, FP_NUM = 9, UINT = 10, SYMBOL = 11, WS = 12
+    MINUS = 6, HAT = 7, DOT = 8, FP_NUM = 9, UINT = 10, SYMBOL = 11, WS = 12, 
+    STR_IMM = 13
   };
 
   calcLexer(antlr4::CharStream *input);

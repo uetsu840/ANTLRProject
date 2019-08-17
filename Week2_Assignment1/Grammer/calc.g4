@@ -5,6 +5,7 @@ input : expr EOF;
 expr
     : integer                                 #expr_none
     | fp_num                                  #expr_none
+    | string                                  #expr_none
     | function_call                           #expr_none
     | constant                                #expr_none
     | paren_expr                              #expr_none
@@ -36,6 +37,10 @@ integer
     | op=(PLUS | MINUS) UINT
     ;
 
+string
+    : STR_IMM
+    ;
+
 OPEN_PAREN:     '(';
 CLOSE_PAREN:    ')';
 ASTERISK:       '*';
@@ -48,3 +53,6 @@ FP_NUM:         [0-9]*DOT[0-9]+;
 UINT:           [0-9]+;
 SYMBOL:         [a-zA-Z][a-zA-Z0-9]*;
 WS:             [ \t\n] -> skip;
+STR_IMM:        DQ (~["])* DQ;
+
+fragment DQ:    '"';

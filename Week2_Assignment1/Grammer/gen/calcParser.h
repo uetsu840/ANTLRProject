@@ -13,12 +13,13 @@ class  calcParser : public antlr4::Parser {
 public:
   enum {
     OPEN_PAREN = 1, CLOSE_PAREN = 2, ASTERISK = 3, SLASH = 4, PLUS = 5, 
-    MINUS = 6, HAT = 7, DOT = 8, FP_NUM = 9, UINT = 10, SYMBOL = 11, WS = 12
+    MINUS = 6, HAT = 7, DOT = 8, FP_NUM = 9, UINT = 10, SYMBOL = 11, WS = 12, 
+    STR_IMM = 13
   };
 
   enum {
     RuleInput = 0, RuleExpr = 1, RuleFunction_call = 2, RuleConstant = 3, 
-    RuleParen_expr = 4, RuleFp_num = 5, RuleInteger = 6
+    RuleParen_expr = 4, RuleFp_num = 5, RuleInteger = 6, RuleString = 7
   };
 
   calcParser(antlr4::TokenStream *input);
@@ -37,7 +38,8 @@ public:
   class ConstantContext;
   class Paren_exprContext;
   class Fp_numContext;
-  class IntegerContext; 
+  class IntegerContext;
+  class StringContext; 
 
   class  InputContext : public antlr4::ParserRuleContext {
   public:
@@ -137,6 +139,7 @@ public:
 
     IntegerContext *integer();
     Fp_numContext *fp_num();
+    StringContext *string();
     Function_callContext *function_call();
     ConstantContext *constant();
     Paren_exprContext *paren_expr();
@@ -233,6 +236,21 @@ public:
   };
 
   IntegerContext* integer();
+
+  class  StringContext : public antlr4::ParserRuleContext {
+  public:
+    StringContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *STR_IMM();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  StringContext* string();
 
 
   virtual bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;

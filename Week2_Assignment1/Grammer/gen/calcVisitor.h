@@ -41,6 +41,8 @@ public:
 
     virtual antlrcpp::Any visitInteger(calcParser::IntegerContext *context) = 0;
 
+    virtual antlrcpp::Any visitString(calcParser::StringContext *context) = 0;
+
 
 };
 
