@@ -1,5 +1,6 @@
-paiza/**
 .vscode/ipch/**
+Release/
+Debug/
 *.ilk
 *.pdb
 .vs/

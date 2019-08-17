@@ -19,7 +19,35 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCalc_add(calcParser::Calc_addContext *ctx) override {
+  virtual antlrcpp::Any visitExpr_raw_multiplicative(calcParser::Expr_raw_multiplicativeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_additive(calcParser::Expr_additiveContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_power(calcParser::Expr_powerContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_multiplicative(calcParser::Expr_multiplicativeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_unary(calcParser::Expr_unaryContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_none(calcParser::Expr_noneContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitParen_expr(calcParser::Paren_exprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitNum(calcParser::NumContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -17,8 +17,29 @@ public:
   virtual void enterInput(calcParser::InputContext *ctx) = 0;
   virtual void exitInput(calcParser::InputContext *ctx) = 0;
 
-  virtual void enterCalc_add(calcParser::Calc_addContext *ctx) = 0;
-  virtual void exitCalc_add(calcParser::Calc_addContext *ctx) = 0;
+  virtual void enterExpr_raw_multiplicative(calcParser::Expr_raw_multiplicativeContext *ctx) = 0;
+  virtual void exitExpr_raw_multiplicative(calcParser::Expr_raw_multiplicativeContext *ctx) = 0;
+
+  virtual void enterExpr_additive(calcParser::Expr_additiveContext *ctx) = 0;
+  virtual void exitExpr_additive(calcParser::Expr_additiveContext *ctx) = 0;
+
+  virtual void enterExpr_power(calcParser::Expr_powerContext *ctx) = 0;
+  virtual void exitExpr_power(calcParser::Expr_powerContext *ctx) = 0;
+
+  virtual void enterExpr_multiplicative(calcParser::Expr_multiplicativeContext *ctx) = 0;
+  virtual void exitExpr_multiplicative(calcParser::Expr_multiplicativeContext *ctx) = 0;
+
+  virtual void enterExpr_unary(calcParser::Expr_unaryContext *ctx) = 0;
+  virtual void exitExpr_unary(calcParser::Expr_unaryContext *ctx) = 0;
+
+  virtual void enterExpr_none(calcParser::Expr_noneContext *ctx) = 0;
+  virtual void exitExpr_none(calcParser::Expr_noneContext *ctx) = 0;
+
+  virtual void enterParen_expr(calcParser::Paren_exprContext *ctx) = 0;
+  virtual void exitParen_expr(calcParser::Paren_exprContext *ctx) = 0;
+
+  virtual void enterNum(calcParser::NumContext *ctx) = 0;
+  virtual void exitNum(calcParser::NumContext *ctx) = 0;
 
 
 };

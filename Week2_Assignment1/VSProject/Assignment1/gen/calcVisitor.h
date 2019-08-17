@@ -21,7 +21,21 @@ public:
    */
     virtual antlrcpp::Any visitInput(calcParser::InputContext *context) = 0;
 
-    virtual antlrcpp::Any visitCalc_add(calcParser::Calc_addContext *context) = 0;
+    virtual antlrcpp::Any visitExpr_raw_multiplicative(calcParser::Expr_raw_multiplicativeContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_additive(calcParser::Expr_additiveContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_power(calcParser::Expr_powerContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_multiplicative(calcParser::Expr_multiplicativeContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_unary(calcParser::Expr_unaryContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_none(calcParser::Expr_noneContext *context) = 0;
+
+    virtual antlrcpp::Any visitParen_expr(calcParser::Paren_exprContext *context) = 0;
+
+    virtual antlrcpp::Any visitNum(calcParser::NumContext *context) = 0;
 
 
 };

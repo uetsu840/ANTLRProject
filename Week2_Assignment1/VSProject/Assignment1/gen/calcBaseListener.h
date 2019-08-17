@@ -19,8 +19,29 @@ public:
   virtual void enterInput(calcParser::InputContext * /*ctx*/) override { }
   virtual void exitInput(calcParser::InputContext * /*ctx*/) override { }
 
-  virtual void enterCalc_add(calcParser::Calc_addContext * /*ctx*/) override { }
-  virtual void exitCalc_add(calcParser::Calc_addContext * /*ctx*/) override { }
+  virtual void enterExpr_raw_multiplicative(calcParser::Expr_raw_multiplicativeContext * /*ctx*/) override { }
+  virtual void exitExpr_raw_multiplicative(calcParser::Expr_raw_multiplicativeContext * /*ctx*/) override { }
+
+  virtual void enterExpr_additive(calcParser::Expr_additiveContext * /*ctx*/) override { }
+  virtual void exitExpr_additive(calcParser::Expr_additiveContext * /*ctx*/) override { }
+
+  virtual void enterExpr_power(calcParser::Expr_powerContext * /*ctx*/) override { }
+  virtual void exitExpr_power(calcParser::Expr_powerContext * /*ctx*/) override { }
+
+  virtual void enterExpr_multiplicative(calcParser::Expr_multiplicativeContext * /*ctx*/) override { }
+  virtual void exitExpr_multiplicative(calcParser::Expr_multiplicativeContext * /*ctx*/) override { }
+
+  virtual void enterExpr_unary(calcParser::Expr_unaryContext * /*ctx*/) override { }
+  virtual void exitExpr_unary(calcParser::Expr_unaryContext * /*ctx*/) override { }
+
+  virtual void enterExpr_none(calcParser::Expr_noneContext * /*ctx*/) override { }
+  virtual void exitExpr_none(calcParser::Expr_noneContext * /*ctx*/) override { }
+
+  virtual void enterParen_expr(calcParser::Paren_exprContext * /*ctx*/) override { }
+  virtual void exitParen_expr(calcParser::Paren_exprContext * /*ctx*/) override { }
+
+  virtual void enterNum(calcParser::NumContext * /*ctx*/) override { }
+  virtual void exitNum(calcParser::NumContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

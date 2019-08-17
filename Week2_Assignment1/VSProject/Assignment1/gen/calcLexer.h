@@ -12,7 +12,8 @@
 class  calcLexer : public antlr4::Lexer {
 public:
   enum {
-    DISITS = 1, PLUS = 2
+    OPEN_PAREN = 1, CLOSE_PAREN = 2, ASTERISK = 3, SLASH = 4, PLUS = 5, 
+    MINUS = 6, HAT = 7, UINT = 8, WS = 9
   };
 
   calcLexer(antlr4::CharStream *input);
