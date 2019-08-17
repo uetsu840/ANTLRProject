@@ -13,11 +13,12 @@ class  calcParser : public antlr4::Parser {
 public:
   enum {
     OPEN_PAREN = 1, CLOSE_PAREN = 2, ASTERISK = 3, SLASH = 4, PLUS = 5, 
-    MINUS = 6, HAT = 7, DOT = 8, FP_NUM = 9, UINT = 10, WS = 11
+    MINUS = 6, HAT = 7, DOT = 8, FP_NUM = 9, UINT = 10, SYMBOL = 11, WS = 12
   };
 
   enum {
-    RuleInput = 0, RuleExpr = 1, RuleParen_expr = 2, RuleFp_num = 3, RuleInteger = 4
+    RuleInput = 0, RuleExpr = 1, RuleFunction_call = 2, RuleConstant = 3, 
+    RuleParen_expr = 4, RuleFp_num = 5, RuleInteger = 6
   };
 
   calcParser(antlr4::TokenStream *input);
@@ -32,6 +33,8 @@ public:
 
   class InputContext;
   class ExprContext;
+  class Function_callContext;
+  class ConstantContext;
   class Paren_exprContext;
   class Fp_numContext;
   class IntegerContext; 
@@ -134,6 +137,8 @@ public:
 
     IntegerContext *integer();
     Fp_numContext *fp_num();
+    Function_callContext *function_call();
+    ConstantContext *constant();
     Paren_exprContext *paren_expr();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -143,6 +148,39 @@ public:
 
   ExprContext* expr();
   ExprContext* expr(int precedence);
+  class  Function_callContext : public antlr4::ParserRuleContext {
+  public:
+    Function_callContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *SYMBOL();
+    antlr4::tree::TerminalNode *OPEN_PAREN();
+    ExprContext *expr();
+    antlr4::tree::TerminalNode *CLOSE_PAREN();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Function_callContext* function_call();
+
+  class  ConstantContext : public antlr4::ParserRuleContext {
+  public:
+    ConstantContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *SYMBOL();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ConstantContext* constant();
+
   class  Paren_exprContext : public antlr4::ParserRuleContext {
   public:
     Paren_exprContext(antlr4::ParserRuleContext *parent, size_t invokingState);

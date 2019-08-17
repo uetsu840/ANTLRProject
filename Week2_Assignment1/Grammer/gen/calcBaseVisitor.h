@@ -39,6 +39,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitFunction_call(calcParser::Function_callContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitConstant(calcParser::ConstantContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitParen_expr(calcParser::Paren_exprContext *ctx) override {
     return visitChildren(ctx);
   }

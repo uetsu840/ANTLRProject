@@ -3,8 +3,11 @@
 #include "gen/calcParser.h"
 #include "gen/calcBaseVisitor.h"
 #include <string>
+#include <math.h>
 
 using namespace std;
+
+const double cPI = 3.14159265357989;
 
 /**
 *	整数のべき乗
@@ -21,6 +24,9 @@ int pow_int(int a, int t) {
 	return b;
 }
 
+/**
+*	何でも入る型
+*/
 struct any_number {
 	enum NUM_TYPE {
 		TYPE_INT = 0,
@@ -265,6 +271,26 @@ public:
 			return result{ false, 0 };
 		}
 	}
+
+	antlrcpp::Any visitConstant(calcParser::ConstantContext* ctx) override
+	{
+		if (0 == strcmp("PI", ctx->SYMBOL()->getText().c_str())) {
+			return result{ true, (double)cPI };
+		}
+		return result{ false, 0 };
+	}
+
+	antlrcpp::Any visitFunction_call(calcParser::Function_callContext* ctx) override
+	{
+		auto op = visit(ctx->expr()).as<result>();
+		const char *pcFuncName = ctx->SYMBOL()->getText().c_str();
+		if (0 == _stricmp("sin", pcFuncName)) {
+			return result{ true, (double)sin(op.value.getDoubleVal()) };
+		} else if (0 == _stricmp("cos", pcFuncName)) {
+			return result{ true, (double)cos(op.value.getDoubleVal()) };
+		}
+		return result{ false, 0 };
+	}
 };
 
 class Calculator {
@@ -314,6 +340,9 @@ const string strTestFileList[] =
 	"../test/fp_add1.txt",
 	"../test/fp_add2.txt",
 	"../test/fp_div1.txt",
+	"../test/function_sin1.txt",
+	"../test/function_sin2.txt"
+
 };
 
 

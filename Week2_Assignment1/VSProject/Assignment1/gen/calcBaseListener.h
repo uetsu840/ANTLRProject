@@ -34,6 +34,12 @@ public:
   virtual void enterExpr_none(calcParser::Expr_noneContext * /*ctx*/) override { }
   virtual void exitExpr_none(calcParser::Expr_noneContext * /*ctx*/) override { }
 
+  virtual void enterFunction_call(calcParser::Function_callContext * /*ctx*/) override { }
+  virtual void exitFunction_call(calcParser::Function_callContext * /*ctx*/) override { }
+
+  virtual void enterConstant(calcParser::ConstantContext * /*ctx*/) override { }
+  virtual void exitConstant(calcParser::ConstantContext * /*ctx*/) override { }
+
   virtual void enterParen_expr(calcParser::Paren_exprContext * /*ctx*/) override { }
   virtual void exitParen_expr(calcParser::Paren_exprContext * /*ctx*/) override { }
 

@@ -32,6 +32,12 @@ public:
   virtual void enterExpr_none(calcParser::Expr_noneContext *ctx) = 0;
   virtual void exitExpr_none(calcParser::Expr_noneContext *ctx) = 0;
 
+  virtual void enterFunction_call(calcParser::Function_callContext *ctx) = 0;
+  virtual void exitFunction_call(calcParser::Function_callContext *ctx) = 0;
+
+  virtual void enterConstant(calcParser::ConstantContext *ctx) = 0;
+  virtual void exitConstant(calcParser::ConstantContext *ctx) = 0;
+
   virtual void enterParen_expr(calcParser::Paren_exprContext *ctx) = 0;
   virtual void exitParen_expr(calcParser::Paren_exprContext *ctx) = 0;
 

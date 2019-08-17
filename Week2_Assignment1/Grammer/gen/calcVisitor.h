@@ -31,6 +31,10 @@ public:
 
     virtual antlrcpp::Any visitExpr_none(calcParser::Expr_noneContext *context) = 0;
 
+    virtual antlrcpp::Any visitFunction_call(calcParser::Function_callContext *context) = 0;
+
+    virtual antlrcpp::Any visitConstant(calcParser::ConstantContext *context) = 0;
+
     virtual antlrcpp::Any visitParen_expr(calcParser::Paren_exprContext *context) = 0;
 
     virtual antlrcpp::Any visitFp_num(calcParser::Fp_numContext *context) = 0;
