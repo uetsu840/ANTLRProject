@@ -5,7 +5,8 @@ static const vector<DeviceAttr::DevExprAttr> s_avecDevExprAttr(
 	{
 		{"CR", DeviceAttr::DevNumExpr::TYPE_RLY, DevType::TYPE_CR},
 		{"R",  DeviceAttr::DevNumExpr::TYPE_RLY, DevType::TYPE_R},
-		{"DM", DeviceAttr::DevNumExpr::TYPE_RLY, DevType::TYPE_DM}
+		{"DM", DeviceAttr::DevNumExpr::TYPE_DEC, DevType::TYPE_DM},
+		{"Z",  DeviceAttr::DevNumExpr::TYPE_DEC, DevType::TYPE_Z},
 	}
 );
 
@@ -102,21 +103,48 @@ DeviceContent::DeviceContent(DevType type, DevSize size, DWORD dwDevNum)
 	}
 	pvecwContent = new vector<WORD>(dwWordNum);
 }
-void DeviceContent::WriteBit(DWORD dwDevNo, bool bVal, DWORD dwBitPos = 0) {
+void DeviceContent::WriteBit(DWORD dwDevNo, bool bVal, DWORD dwWBitPos = 0) {
 	WORD* pwAddr;
+	DWORD dwBitPos;
 	getWordAddr(dwDevNo, &pwAddr, &dwBitPos);
 	BitSet(*pwAddr, (1 << dwBitPos));
 }
 void DeviceContent::WriteWord(DWORD dwDevNo, WORD wVal) {
 	WORD* pwAddr;
-	getWordAddr(dwDevNo, &pwAddr);
-	*pwAddr = wVal;
+	DWORD dwBitPos;
+	getWordAddr(dwDevNo, &pwAddr, &dwBitPos);
+	if (0 == dwBitPos) {
+		*pwAddr = wVal;
+	} else {
+		/* アドレスミスアラインアクセス */
+		WORD wMaskL = (0x1 << dwBitPos) - 1;
+		WORD wMaskH = ~wMaskL;
+		DWORD dwRShift = WORD_BITS - dwBitPos;
+		*pwAddr       = ((wVal << dwBitPos) & wMaskH) | (*pwAddr & wMaskL);
+		*(pwAddr + 1) = ((wVal >> dwRShift) & wMaskL) | (*(pwAddr + 1) & wMaskH);
+	}
 }
 void DeviceContent::WriteDword(DWORD dwDevNo, DWORD dwVal) {
 	WORD* pwAddr;
-	getWordAddr(dwDevNo, &pwAddr);
-	*pwAddr = EXTRACT_WORD(dwVal, WORD_L);
-	*(pwAddr + 1) = EXTRACT_WORD(dwVal, WORD_H);
+	DWORD dwBitPos;
+	getWordAddr(dwDevNo, &pwAddr, &dwBitPos);
+	if (0 == dwBitPos) {
+		*pwAddr = EXTRACT_WORD(dwVal, WORD_L);
+		*(pwAddr + 1) = EXTRACT_WORD(dwVal, WORD_H);
+	} else {
+		/* アドレスミスアラインアクセス */
+		WORD wMaskL = (0x1 << dwBitPos) - 1;
+		WORD wMaskH = ~wMaskL;
+		DWORD dwRShift = WORD_BITS - dwBitPos;
+		WORD wH = EXTRACT_WORD(dwVal, WORD_H);
+		WORD wL = EXTRACT_WORD(dwVal, WORD_L);
+
+		*pwAddr       = ((wL << dwBitPos) & wMaskH) | (*pwAddr & wMaskL);
+		*(pwAddr + 1) = ((wL >> dwRShift) & wMaskL) | (*(pwAddr + 1) & wMaskH);
+
+		*(pwAddr + 1) = ((wH << dwBitPos) & wMaskH) | (*(pwAddr + 1) & wMaskL);
+		*(pwAddr + 2) = ((wH >> dwRShift) & wMaskL) | (*(pwAddr + 2) & wMaskH);
+	}
 }
 bool DeviceContent::ReadBit(DWORD dwDevNo) {
 	WORD* pwAddr;
@@ -126,27 +154,36 @@ bool DeviceContent::ReadBit(DWORD dwDevNo) {
 }
 WORD DeviceContent::ReadWord(DWORD dwDevNo) {
 	WORD* pwAddr;
-	getWordAddr(dwDevNo, &pwAddr);
-	return *pwAddr;
+	DWORD dwBitPos;
+	getWordAddr(dwDevNo, &pwAddr, &dwBitPos);
+	if (0 == dwBitPos) {
+		return *pwAddr;
+	} else {
+		/* アドレスミスアラインアクセス */
+		return ((*pwAddr >> dwBitPos)
+				| (*(pwAddr + 1) << (WORD_BITS - dwBitPos)));
+	}
 }
 DWORD DeviceContent::ReadDword(DWORD dwDevNo) {
 	WORD* pwAddr;
-	getWordAddr(dwDevNo, &pwAddr);
-	return COMBINE_DWORD(*(pwAddr + 1), *pwAddr);
+	DWORD dwBitPos;
+	getWordAddr(dwDevNo, &pwAddr, &dwBitPos);
+	if (0 == dwBitPos) {
+		return COMBINE_DWORD(*(pwAddr + 1), *pwAddr);
+	} else {
+		/* アドレスミスアラインアクセス */
+		WORD wL = ((*pwAddr >> dwBitPos)
+					| (*(pwAddr + 1) << (WORD_BITS - dwBitPos)));
+		WORD wH = ((*(pwAddr + 1) >> dwBitPos)
+					| (*(pwAddr + 1) << (WORD_BITS - dwBitPos)));
+		return COMBINE_DWORD(wH, wL);
+	}
 }
-
-
-
-
-
-
-
-
 
 
 
 /**
-*	デバイスの実態
+*	デバイスの実体
 */
 vector<DeviceContent> Device::vecDevices;
 static const DWORD DEV_NUM_R = 1000 * WORD_BITS;
@@ -188,6 +225,8 @@ bool Device::WriteWord(
 	const DWORD dwDevNo,
 	const WORD wValue)
 {
+	DeviceContent* pDev = getDevContent(eType);
+	pDev->WriteWord(dwDevNo, wValue);
 	return true;
 }
 
@@ -197,6 +236,8 @@ bool Device::WriteDword(
 	const DWORD dwDevNo,
 	const DWORD dwValue)
 {
+	DeviceContent* pDev = getDevContent(eType);
+	pDev->WriteDword(dwDevNo, dwValue);
 	return true;
 }
 

@@ -63,7 +63,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDevice_normal(MnemonicParser::Device_normalContext *ctx) override {
+  virtual antlrcpp::Any visitDev_nml_single(MnemonicParser::Dev_nml_singleContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDev_with_idx(MnemonicParser::Dev_with_idxContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDev_with_wbit(MnemonicParser::Dev_with_wbitContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -79,7 +87,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitIndex_value(MnemonicParser::Index_valueContext *ctx) override {
+  virtual antlrcpp::Any visitIndex_value_immediate(MnemonicParser::Index_value_immediateContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitIndex_value_device_z(MnemonicParser::Index_value_device_zContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -99,7 +111,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInt_immediate(MnemonicParser::Int_immediateContext *ctx) override {
+  virtual antlrcpp::Any visitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -119,7 +135,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitIndex_value_old(MnemonicParser::Index_value_oldContext *ctx) override {
+  virtual antlrcpp::Any visitIndex_imm(MnemonicParser::Index_immContext *ctx) override {
     return visitChildren(ctx);
   }
 

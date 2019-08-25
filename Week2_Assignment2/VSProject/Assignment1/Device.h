@@ -39,9 +39,10 @@ private:
 	bool getWordAddr(
 		const DWORD dwDevNo,		/*!<[in] デバイス番号 */
 		WORD  **ppwWordAddr,		/*!<[out] アドレス */
-		DWORD *pdwBitPos = NULL)	/*!<[in/out] ワード内のビット位置。ビットデバイスの場合のみ値を書き換える */
+		DWORD *pdwBitPos)			/*!<[out] ワード内のビット位置。ビットデバイスの場合に格納する。 */
 	{
-		DWORD dwWordOfs;
+		DWORD dwWordOfs = 0;
+		*pdwBitPos = 0;
 		switch (eSize) {
 		case SIZE_1bit:
 			dwWordOfs = dwDevNo / WORD_BITS;
@@ -56,8 +57,10 @@ private:
 		case SIZE_TC:
 			dwWordOfs = dwDevNo * WSIZE_TC;
 			break;
+		default:
+			break;
 		}
-		*ppwWordAddr = (WORD*)(&(pvecwContent[dwWordOfs]));
+		*ppwWordAddr = (WORD*)(pvecwContent->begin()._Ptr) + dwWordOfs;
 
 		return true;
 	}

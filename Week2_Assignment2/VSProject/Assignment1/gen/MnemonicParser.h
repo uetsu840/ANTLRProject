@@ -14,12 +14,12 @@ public:
   enum {
     DOT_SEGMENT = 1, DOT_SUFFIX = 2, ROPERATOR_INDEX = 3, SCOPE_LOCAL = 4, 
     MUL_OP_REF = 5, ARITH_PLUS = 6, ARITH_MINUS = 7, ARITH_DIV = 8, ARITH_EQ = 9, 
-    ARITH_LT = 10, ARITH_GT = 11, ARITH_RSHIFT = 12, ARITH_LSHIFT = 13, 
-    ARITH_OR = 14, ARITH_AND = 15, ARITH_XOR = 16, PREFIX_OLD_INDIRECT = 17, 
-    DEV_TM = 18, NEWLINE = 19, SEPARATOR = 20, OPERAND_UNDEFINED = 21, STRING_IMMEDIATE = 22, 
-    IMM_DEC_NUMBER_K = 23, IMM_DEC_NUMBER_SHARP = 24, IMM_HEX_NUMBER = 25, 
-    IMM_DEC_NUMBER_SIGN = 26, IMM_DEC_NUMBER_RAW = 27, FP_EXPONENTIAL = 28, 
-    FP_DECIMAL = 29, INDEX_DEVICE = 30, OLD_INDIRECT = 31, IDENTIFIER = 32
+    ARITH_LT = 10, ARITH_LT_EQ = 11, ARITH_GT = 12, ARITH_GT_EQ = 13, ARITH_RSHIFT = 14, 
+    ARITH_LSHIFT = 15, ARITH_OR = 16, ARITH_AND = 17, ARITH_XOR = 18, PREFIX_OLD_INDIRECT = 19, 
+    DEV_TM = 20, NEWLINE = 21, SEPARATOR = 22, OPERAND_UNDEFINED = 23, STRING_IMMEDIATE = 24, 
+    IMM_DEC_NUMBER_K = 25, IMM_DEC_NUMBER_SHARP = 26, IMM_HEX_NUMBER = 27, 
+    IMM_DEC_NUMBER_SIGN = 28, IMM_DEC_NUMBER_RAW = 29, FP_EXPONENTIAL = 30, 
+    FP_DECIMAL = 31, INDEX_DEVICE = 32, OLD_INDIRECT = 33, IDENTIFIER = 34
   };
 
   enum {
@@ -29,7 +29,7 @@ public:
     RuleDevice_wbit = 11, RuleDevice_content = 12, RuleDevice_raw = 13, 
     RuleIndex_value = 14, RuleBitpos = 15, RuleScope = 16, RuleReference_operator = 17, 
     RuleImmediate = 18, RuleInt_immediate = 19, RuleFp_immediate = 20, RuleStr_immediate = 21, 
-    RuleDecimal_immediate = 22, RuleRly_or_int_immediate = 23, RuleIndex_value_old = 24
+    RuleDecimal_immediate = 22, RuleRly_or_int_immediate = 23, RuleIndex_imm = 24
   };
 
   MnemonicParser(antlr4::TokenStream *input);
@@ -66,7 +66,7 @@ public:
   class Str_immediateContext;
   class Decimal_immediateContext;
   class Rly_or_int_immediateContext;
-  class Index_value_oldContext; 
+  class Index_immContext; 
 
   class  InputContext : public antlr4::ParserRuleContext {
   public:
@@ -140,7 +140,7 @@ public:
     Inst_with_suffixContext(InstructionContext *ctx);
 
     antlr4::tree::TerminalNode *IDENTIFIER();
-    SuffixContext *suffix();
+    antlr4::tree::TerminalNode *DOT_SUFFIX();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -164,7 +164,7 @@ public:
 
     antlr4::tree::TerminalNode *IDENTIFIER();
     Arith_operatorContext *arith_operator();
-    SuffixContext *suffix();
+    antlr4::tree::TerminalNode *DOT_SUFFIX();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -183,7 +183,9 @@ public:
     antlr4::tree::TerminalNode *ARITH_DIV();
     antlr4::tree::TerminalNode *ARITH_EQ();
     antlr4::tree::TerminalNode *ARITH_LT();
+    antlr4::tree::TerminalNode *ARITH_LT_EQ();
     antlr4::tree::TerminalNode *ARITH_GT();
+    antlr4::tree::TerminalNode *ARITH_GT_EQ();
     antlr4::tree::TerminalNode *ARITH_RSHIFT();
     antlr4::tree::TerminalNode *ARITH_LSHIFT();
     antlr4::tree::TerminalNode *ARITH_AND();
@@ -203,7 +205,6 @@ public:
   public:
     SuffixContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *DOT_SUFFIX();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -282,17 +283,49 @@ public:
   class  Device_normalContext : public antlr4::ParserRuleContext {
   public:
     Device_normalContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    Device_contentContext *device_content();
-    antlr4::tree::TerminalNode *ROPERATOR_INDEX();
-    Index_valueContext *index_value();
-    Device_wbitContext *device_wbit();
+   
+    Device_normalContext() = default;
+    void copyFrom(Device_normalContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Dev_nml_singleContext : public Device_normalContext {
+  public:
+    Dev_nml_singleContext(Device_normalContext *ctx);
+
+    Device_contentContext *device_content();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Dev_with_wbitContext : public Device_normalContext {
+  public:
+    Dev_with_wbitContext(Device_normalContext *ctx);
+
+    Device_wbitContext *device_wbit();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Dev_with_idxContext : public Device_normalContext {
+  public:
+    Dev_with_idxContext(Device_normalContext *ctx);
+
+    Device_contentContext *device_content();
+    antlr4::tree::TerminalNode *ROPERATOR_INDEX();
+    Index_valueContext *index_value();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   Device_normalContext* device_normal();
@@ -348,15 +381,36 @@ public:
   class  Index_valueContext : public antlr4::ParserRuleContext {
   public:
     Index_valueContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    Index_value_oldContext *index_value_old();
-    Device_zContext *device_z();
+   
+    Index_valueContext() = default;
+    void copyFrom(Index_valueContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Index_value_device_zContext : public Index_valueContext {
+  public:
+    Index_value_device_zContext(Index_valueContext *ctx);
+
+    Device_zContext *device_z();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Index_value_immediateContext : public Index_valueContext {
+  public:
+    Index_value_immediateContext(Index_valueContext *ctx);
+
+    Index_immContext *index_imm();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   Index_valueContext* index_value();
@@ -427,15 +481,36 @@ public:
   class  Int_immediateContext : public antlr4::ParserRuleContext {
   public:
     Int_immediateContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    Decimal_immediateContext *decimal_immediate();
-    antlr4::tree::TerminalNode *IMM_HEX_NUMBER();
+   
+    Int_immediateContext() = default;
+    void copyFrom(Int_immediateContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Int_immediate_hexContext : public Int_immediateContext {
+  public:
+    Int_immediate_hexContext(Int_immediateContext *ctx);
+
+    antlr4::tree::TerminalNode *IMM_HEX_NUMBER();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Int_immediate_decimalContext : public Int_immediateContext {
+  public:
+    Int_immediate_decimalContext(Int_immediateContext *ctx);
+
+    Decimal_immediateContext *decimal_immediate();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   Int_immediateContext* int_immediate();
@@ -496,7 +571,7 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IMM_DEC_NUMBER_RAW();
     antlr4::tree::TerminalNode *ROPERATOR_INDEX();
-    Index_value_oldContext *index_value_old();
+    Index_immContext *index_imm();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -507,9 +582,9 @@ public:
 
   Rly_or_int_immediateContext* rly_or_int_immediate();
 
-  class  Index_value_oldContext : public antlr4::ParserRuleContext {
+  class  Index_immContext : public antlr4::ParserRuleContext {
   public:
-    Index_value_oldContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    Index_immContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IMM_DEC_NUMBER_RAW();
     antlr4::tree::TerminalNode *IMM_DEC_NUMBER_SIGN();
@@ -522,7 +597,7 @@ public:
    
   };
 
-  Index_value_oldContext* index_value_old();
+  Index_immContext* index_imm();
 
 
 private:

@@ -43,7 +43,11 @@ public:
 
     virtual antlrcpp::Any visitDevice_old_indirect(MnemonicParser::Device_old_indirectContext *context) = 0;
 
-    virtual antlrcpp::Any visitDevice_normal(MnemonicParser::Device_normalContext *context) = 0;
+    virtual antlrcpp::Any visitDev_nml_single(MnemonicParser::Dev_nml_singleContext *context) = 0;
+
+    virtual antlrcpp::Any visitDev_with_idx(MnemonicParser::Dev_with_idxContext *context) = 0;
+
+    virtual antlrcpp::Any visitDev_with_wbit(MnemonicParser::Dev_with_wbitContext *context) = 0;
 
     virtual antlrcpp::Any visitDevice_wbit(MnemonicParser::Device_wbitContext *context) = 0;
 
@@ -51,7 +55,9 @@ public:
 
     virtual antlrcpp::Any visitDevice_raw(MnemonicParser::Device_rawContext *context) = 0;
 
-    virtual antlrcpp::Any visitIndex_value(MnemonicParser::Index_valueContext *context) = 0;
+    virtual antlrcpp::Any visitIndex_value_immediate(MnemonicParser::Index_value_immediateContext *context) = 0;
+
+    virtual antlrcpp::Any visitIndex_value_device_z(MnemonicParser::Index_value_device_zContext *context) = 0;
 
     virtual antlrcpp::Any visitBitpos(MnemonicParser::BitposContext *context) = 0;
 
@@ -61,7 +67,9 @@ public:
 
     virtual antlrcpp::Any visitImmediate(MnemonicParser::ImmediateContext *context) = 0;
 
-    virtual antlrcpp::Any visitInt_immediate(MnemonicParser::Int_immediateContext *context) = 0;
+    virtual antlrcpp::Any visitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *context) = 0;
+
+    virtual antlrcpp::Any visitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *context) = 0;
 
     virtual antlrcpp::Any visitFp_immediate(MnemonicParser::Fp_immediateContext *context) = 0;
 
@@ -71,7 +79,7 @@ public:
 
     virtual antlrcpp::Any visitRly_or_int_immediate(MnemonicParser::Rly_or_int_immediateContext *context) = 0;
 
-    virtual antlrcpp::Any visitIndex_value_old(MnemonicParser::Index_value_oldContext *context) = 0;
+    virtual antlrcpp::Any visitIndex_imm(MnemonicParser::Index_immContext *context) = 0;
 
 
 };

@@ -67,9 +67,7 @@ public:
 
     virtual antlrcpp::Any visitImmediate(MnemonicParser::ImmediateContext *context) = 0;
 
-    virtual antlrcpp::Any visitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *context) = 0;
-
-    virtual antlrcpp::Any visitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *context) = 0;
+    virtual antlrcpp::Any visitInt_immediate(MnemonicParser::Int_immediateContext *context) = 0;
 
     virtual antlrcpp::Any visitFp_immediate(MnemonicParser::Fp_immediateContext *context) = 0;
 

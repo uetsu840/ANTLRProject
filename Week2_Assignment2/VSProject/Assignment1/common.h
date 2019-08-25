@@ -59,7 +59,7 @@ static inline void BitRst(QWORD& a, const QWORD mask) { a &= (~mask); };
 #define WORD_L		(0)
 #define WORD_H		(1)
 #define EXTRACT_WORD(val, pos)		((val >> pos * WORD_BITS) & MAX_WORD);
-#define COMBINE_DWORD(valL, valH)	((valL) | (valH << WORD_BITS))
+#define COMBINE_DWORD(valH, valL)	((valH << WORD_BITS) | (valL))
 
 #define BYTE_BITS   (8)
 #define WORD_BITS   (16)

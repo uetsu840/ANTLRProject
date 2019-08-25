@@ -14,9 +14,9 @@ separator
 
 /* 命令語 */
 instruction
-    : IDENTIFIER                            #inst_normal
-    | IDENTIFIER suffix                     #inst_with_suffix
-    | IDENTIFIER arith_operator suffix?     #inst_arith
+    : IDENTIFIER                                #inst_normal
+    | IDENTIFIER DOT_SUFFIX                     #inst_with_suffix
+    | IDENTIFIER arith_operator DOT_SUFFIX?     #inst_arith
     ;
 
 arith_operator         //算術演算オペレータ
@@ -26,7 +26,9 @@ arith_operator         //算術演算オペレータ
     | ARITH_DIV
     | ARITH_EQ
     | ARITH_LT
+    | ARITH_LT_EQ
     | ARITH_GT
+    | ARITH_GT_EQ
     | ARITH_RSHIFT
     | ARITH_LSHIFT
     | ARITH_AND
@@ -35,7 +37,7 @@ arith_operator         //算術演算オペレータ
     ;
 
 suffix
-    : DOT_SUFFIX
+    :
     ;
 
 /* オペランド */
@@ -61,9 +63,9 @@ device_old_indirect     // 旧間接参照
     ;
 
 device_normal           // デバイス
-    : device_content
-    | device_content ROPERATOR_INDEX index_value    // *@DM10:Z1, *@DM10:K10
-    | device_wbit                                   // @DM10.0
+    : device_content                                #dev_nml_single
+    | device_content ROPERATOR_INDEX index_value    #dev_with_idx    // *@DM10:Z1, *@DM10:K10
+    | device_wbit                                   #dev_with_wbit   // @DM10.0
     ;
 
 device_wbit             // デバイス(ワード中ビット)
@@ -82,8 +84,8 @@ device_raw              // デバイス(生)
     ;
 
 index_value             // インデックス修飾
-    : index_value_old
-    | device_z
+    : index_imm               #index_value_immediate
+    | device_z                #index_value_device_z
     ;
 
 bitpos                  // ワード中ビットのビット位置
@@ -107,8 +109,8 @@ immediate               // 即値
     ;
 
 int_immediate           // 整数即値
-    : decimal_immediate
-    | IMM_HEX_NUMBER
+    : decimal_immediate         #int_immediate_decimal
+    | IMM_HEX_NUMBER            #int_immediate_hex
     ;
 
 fp_immediate            // 浮動小数点即値
@@ -132,10 +134,10 @@ decimal_immediate
 /* 0 を リレーと整数の両方で解釈するための表記 */
 rly_or_int_immediate    // 0, 0:1, 0:Z1,,,,
     : IMM_DEC_NUMBER_RAW
-    | IMM_DEC_NUMBER_RAW ROPERATOR_INDEX index_value_old
+    | IMM_DEC_NUMBER_RAW ROPERATOR_INDEX index_imm
     ;
 
-index_value_old         // リレーに対するインデックス修飾 (K1234 以外の10進即値)
+index_imm         // リレーに対するインデックス修飾 (K1234 以外の10進即値)
     : IMM_DEC_NUMBER_RAW
     | IMM_DEC_NUMBER_SIGN
     | IMM_DEC_NUMBER_SHARP
@@ -152,7 +154,9 @@ ARITH_MINUS     : MINUS;
 ARITH_DIV       : SLASH;
 ARITH_EQ        : EQUAL;
 ARITH_LT        : '<';
+ARITH_LT_EQ     : '<=';
 ARITH_GT        : '>';
+ARITH_GT_EQ     : '>=';
 ARITH_RSHIFT    : '>>';
 ARITH_LSHIFT    : '<<';
 ARITH_OR        : BAR;

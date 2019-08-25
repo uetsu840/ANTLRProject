@@ -52,8 +52,14 @@ public:
   virtual void enterDevice_old_indirect(MnemonicParser::Device_old_indirectContext * /*ctx*/) override { }
   virtual void exitDevice_old_indirect(MnemonicParser::Device_old_indirectContext * /*ctx*/) override { }
 
-  virtual void enterDevice_normal(MnemonicParser::Device_normalContext * /*ctx*/) override { }
-  virtual void exitDevice_normal(MnemonicParser::Device_normalContext * /*ctx*/) override { }
+  virtual void enterDev_nml_single(MnemonicParser::Dev_nml_singleContext * /*ctx*/) override { }
+  virtual void exitDev_nml_single(MnemonicParser::Dev_nml_singleContext * /*ctx*/) override { }
+
+  virtual void enterDev_with_idx(MnemonicParser::Dev_with_idxContext * /*ctx*/) override { }
+  virtual void exitDev_with_idx(MnemonicParser::Dev_with_idxContext * /*ctx*/) override { }
+
+  virtual void enterDev_with_wbit(MnemonicParser::Dev_with_wbitContext * /*ctx*/) override { }
+  virtual void exitDev_with_wbit(MnemonicParser::Dev_with_wbitContext * /*ctx*/) override { }
 
   virtual void enterDevice_wbit(MnemonicParser::Device_wbitContext * /*ctx*/) override { }
   virtual void exitDevice_wbit(MnemonicParser::Device_wbitContext * /*ctx*/) override { }
@@ -64,8 +70,11 @@ public:
   virtual void enterDevice_raw(MnemonicParser::Device_rawContext * /*ctx*/) override { }
   virtual void exitDevice_raw(MnemonicParser::Device_rawContext * /*ctx*/) override { }
 
-  virtual void enterIndex_value(MnemonicParser::Index_valueContext * /*ctx*/) override { }
-  virtual void exitIndex_value(MnemonicParser::Index_valueContext * /*ctx*/) override { }
+  virtual void enterIndex_value_immediate(MnemonicParser::Index_value_immediateContext * /*ctx*/) override { }
+  virtual void exitIndex_value_immediate(MnemonicParser::Index_value_immediateContext * /*ctx*/) override { }
+
+  virtual void enterIndex_value_device_z(MnemonicParser::Index_value_device_zContext * /*ctx*/) override { }
+  virtual void exitIndex_value_device_z(MnemonicParser::Index_value_device_zContext * /*ctx*/) override { }
 
   virtual void enterBitpos(MnemonicParser::BitposContext * /*ctx*/) override { }
   virtual void exitBitpos(MnemonicParser::BitposContext * /*ctx*/) override { }
@@ -79,8 +88,11 @@ public:
   virtual void enterImmediate(MnemonicParser::ImmediateContext * /*ctx*/) override { }
   virtual void exitImmediate(MnemonicParser::ImmediateContext * /*ctx*/) override { }
 
-  virtual void enterInt_immediate(MnemonicParser::Int_immediateContext * /*ctx*/) override { }
-  virtual void exitInt_immediate(MnemonicParser::Int_immediateContext * /*ctx*/) override { }
+  virtual void enterInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext * /*ctx*/) override { }
+  virtual void exitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext * /*ctx*/) override { }
+
+  virtual void enterInt_immediate_hex(MnemonicParser::Int_immediate_hexContext * /*ctx*/) override { }
+  virtual void exitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext * /*ctx*/) override { }
 
   virtual void enterFp_immediate(MnemonicParser::Fp_immediateContext * /*ctx*/) override { }
   virtual void exitFp_immediate(MnemonicParser::Fp_immediateContext * /*ctx*/) override { }
@@ -94,8 +106,8 @@ public:
   virtual void enterRly_or_int_immediate(MnemonicParser::Rly_or_int_immediateContext * /*ctx*/) override { }
   virtual void exitRly_or_int_immediate(MnemonicParser::Rly_or_int_immediateContext * /*ctx*/) override { }
 
-  virtual void enterIndex_value_old(MnemonicParser::Index_value_oldContext * /*ctx*/) override { }
-  virtual void exitIndex_value_old(MnemonicParser::Index_value_oldContext * /*ctx*/) override { }
+  virtual void enterIndex_imm(MnemonicParser::Index_immContext * /*ctx*/) override { }
+  virtual void exitIndex_imm(MnemonicParser::Index_immContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

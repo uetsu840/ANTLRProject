@@ -86,11 +86,8 @@ public:
   virtual void enterImmediate(MnemonicParser::ImmediateContext *ctx) = 0;
   virtual void exitImmediate(MnemonicParser::ImmediateContext *ctx) = 0;
 
-  virtual void enterInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *ctx) = 0;
-  virtual void exitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *ctx) = 0;
-
-  virtual void enterInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *ctx) = 0;
-  virtual void exitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *ctx) = 0;
+  virtual void enterInt_immediate(MnemonicParser::Int_immediateContext *ctx) = 0;
+  virtual void exitInt_immediate(MnemonicParser::Int_immediateContext *ctx) = 0;
 
   virtual void enterFp_immediate(MnemonicParser::Fp_immediateContext *ctx) = 0;
   virtual void exitFp_immediate(MnemonicParser::Fp_immediateContext *ctx) = 0;

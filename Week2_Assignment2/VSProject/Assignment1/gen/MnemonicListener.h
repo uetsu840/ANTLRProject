@@ -50,8 +50,14 @@ public:
   virtual void enterDevice_old_indirect(MnemonicParser::Device_old_indirectContext *ctx) = 0;
   virtual void exitDevice_old_indirect(MnemonicParser::Device_old_indirectContext *ctx) = 0;
 
-  virtual void enterDevice_normal(MnemonicParser::Device_normalContext *ctx) = 0;
-  virtual void exitDevice_normal(MnemonicParser::Device_normalContext *ctx) = 0;
+  virtual void enterDev_nml_single(MnemonicParser::Dev_nml_singleContext *ctx) = 0;
+  virtual void exitDev_nml_single(MnemonicParser::Dev_nml_singleContext *ctx) = 0;
+
+  virtual void enterDev_with_idx(MnemonicParser::Dev_with_idxContext *ctx) = 0;
+  virtual void exitDev_with_idx(MnemonicParser::Dev_with_idxContext *ctx) = 0;
+
+  virtual void enterDev_with_wbit(MnemonicParser::Dev_with_wbitContext *ctx) = 0;
+  virtual void exitDev_with_wbit(MnemonicParser::Dev_with_wbitContext *ctx) = 0;
 
   virtual void enterDevice_wbit(MnemonicParser::Device_wbitContext *ctx) = 0;
   virtual void exitDevice_wbit(MnemonicParser::Device_wbitContext *ctx) = 0;
@@ -62,8 +68,11 @@ public:
   virtual void enterDevice_raw(MnemonicParser::Device_rawContext *ctx) = 0;
   virtual void exitDevice_raw(MnemonicParser::Device_rawContext *ctx) = 0;
 
-  virtual void enterIndex_value(MnemonicParser::Index_valueContext *ctx) = 0;
-  virtual void exitIndex_value(MnemonicParser::Index_valueContext *ctx) = 0;
+  virtual void enterIndex_value_immediate(MnemonicParser::Index_value_immediateContext *ctx) = 0;
+  virtual void exitIndex_value_immediate(MnemonicParser::Index_value_immediateContext *ctx) = 0;
+
+  virtual void enterIndex_value_device_z(MnemonicParser::Index_value_device_zContext *ctx) = 0;
+  virtual void exitIndex_value_device_z(MnemonicParser::Index_value_device_zContext *ctx) = 0;
 
   virtual void enterBitpos(MnemonicParser::BitposContext *ctx) = 0;
   virtual void exitBitpos(MnemonicParser::BitposContext *ctx) = 0;
@@ -77,8 +86,11 @@ public:
   virtual void enterImmediate(MnemonicParser::ImmediateContext *ctx) = 0;
   virtual void exitImmediate(MnemonicParser::ImmediateContext *ctx) = 0;
 
-  virtual void enterInt_immediate(MnemonicParser::Int_immediateContext *ctx) = 0;
-  virtual void exitInt_immediate(MnemonicParser::Int_immediateContext *ctx) = 0;
+  virtual void enterInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *ctx) = 0;
+  virtual void exitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *ctx) = 0;
+
+  virtual void enterInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *ctx) = 0;
+  virtual void exitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *ctx) = 0;
 
   virtual void enterFp_immediate(MnemonicParser::Fp_immediateContext *ctx) = 0;
   virtual void exitFp_immediate(MnemonicParser::Fp_immediateContext *ctx) = 0;
@@ -92,8 +104,8 @@ public:
   virtual void enterRly_or_int_immediate(MnemonicParser::Rly_or_int_immediateContext *ctx) = 0;
   virtual void exitRly_or_int_immediate(MnemonicParser::Rly_or_int_immediateContext *ctx) = 0;
 
-  virtual void enterIndex_value_old(MnemonicParser::Index_value_oldContext *ctx) = 0;
-  virtual void exitIndex_value_old(MnemonicParser::Index_value_oldContext *ctx) = 0;
+  virtual void enterIndex_imm(MnemonicParser::Index_immContext *ctx) = 0;
+  virtual void exitIndex_imm(MnemonicParser::Index_immContext *ctx) = 0;
 
 
 };

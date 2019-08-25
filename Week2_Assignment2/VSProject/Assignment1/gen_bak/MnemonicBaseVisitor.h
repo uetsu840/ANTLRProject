@@ -111,11 +111,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext *ctx) override {
+  virtual antlrcpp::Any visitInt_immediate(MnemonicParser::Int_immediateContext *ctx) override {
     return visitChildren(ctx);
   }
 

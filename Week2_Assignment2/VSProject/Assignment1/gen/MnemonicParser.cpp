@@ -342,8 +342,8 @@ tree::TerminalNode* MnemonicParser::Inst_with_suffixContext::IDENTIFIER() {
   return getToken(MnemonicParser::IDENTIFIER, 0);
 }
 
-MnemonicParser::SuffixContext* MnemonicParser::Inst_with_suffixContext::suffix() {
-  return getRuleContext<MnemonicParser::SuffixContext>(0);
+tree::TerminalNode* MnemonicParser::Inst_with_suffixContext::DOT_SUFFIX() {
+  return getToken(MnemonicParser::DOT_SUFFIX, 0);
 }
 
 MnemonicParser::Inst_with_suffixContext::Inst_with_suffixContext(InstructionContext *ctx) { copyFrom(ctx); }
@@ -400,8 +400,8 @@ MnemonicParser::Arith_operatorContext* MnemonicParser::Inst_arithContext::arith_
   return getRuleContext<MnemonicParser::Arith_operatorContext>(0);
 }
 
-MnemonicParser::SuffixContext* MnemonicParser::Inst_arithContext::suffix() {
-  return getRuleContext<MnemonicParser::SuffixContext>(0);
+tree::TerminalNode* MnemonicParser::Inst_arithContext::DOT_SUFFIX() {
+  return getToken(MnemonicParser::DOT_SUFFIX, 0);
 }
 
 MnemonicParser::Inst_arithContext::Inst_arithContext(InstructionContext *ctx) { copyFrom(ctx); }
@@ -449,7 +449,7 @@ MnemonicParser::InstructionContext* MnemonicParser::instruction() {
       setState(91);
       match(MnemonicParser::IDENTIFIER);
       setState(92);
-      suffix();
+      match(MnemonicParser::DOT_SUFFIX);
       break;
     }
 
@@ -466,7 +466,7 @@ MnemonicParser::InstructionContext* MnemonicParser::instruction() {
       _la = _input->LA(1);
       if (_la == MnemonicParser::DOT_SUFFIX) {
         setState(95);
-        suffix();
+        match(MnemonicParser::DOT_SUFFIX);
       }
       break;
     }
@@ -513,8 +513,16 @@ tree::TerminalNode* MnemonicParser::Arith_operatorContext::ARITH_LT() {
   return getToken(MnemonicParser::ARITH_LT, 0);
 }
 
+tree::TerminalNode* MnemonicParser::Arith_operatorContext::ARITH_LT_EQ() {
+  return getToken(MnemonicParser::ARITH_LT_EQ, 0);
+}
+
 tree::TerminalNode* MnemonicParser::Arith_operatorContext::ARITH_GT() {
   return getToken(MnemonicParser::ARITH_GT, 0);
+}
+
+tree::TerminalNode* MnemonicParser::Arith_operatorContext::ARITH_GT_EQ() {
+  return getToken(MnemonicParser::ARITH_GT_EQ, 0);
 }
 
 tree::TerminalNode* MnemonicParser::Arith_operatorContext::ARITH_RSHIFT() {
@@ -581,7 +589,9 @@ MnemonicParser::Arith_operatorContext* MnemonicParser::arith_operator() {
       | (1ULL << MnemonicParser::ARITH_DIV)
       | (1ULL << MnemonicParser::ARITH_EQ)
       | (1ULL << MnemonicParser::ARITH_LT)
+      | (1ULL << MnemonicParser::ARITH_LT_EQ)
       | (1ULL << MnemonicParser::ARITH_GT)
+      | (1ULL << MnemonicParser::ARITH_GT_EQ)
       | (1ULL << MnemonicParser::ARITH_RSHIFT)
       | (1ULL << MnemonicParser::ARITH_LSHIFT)
       | (1ULL << MnemonicParser::ARITH_OR)
@@ -608,10 +618,6 @@ MnemonicParser::Arith_operatorContext* MnemonicParser::arith_operator() {
 
 MnemonicParser::SuffixContext::SuffixContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
-}
-
-tree::TerminalNode* MnemonicParser::SuffixContext::DOT_SUFFIX() {
-  return getToken(MnemonicParser::DOT_SUFFIX, 0);
 }
 
 
@@ -648,8 +654,7 @@ MnemonicParser::SuffixContext* MnemonicParser::suffix() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(102);
-    match(MnemonicParser::DOT_SUFFIX);
+
    
   }
   catch (RecognitionException &e) {
@@ -970,47 +975,98 @@ MnemonicParser::Device_normalContext::Device_normalContext(ParserRuleContext *pa
   : ParserRuleContext(parent, invokingState) {
 }
 
-MnemonicParser::Device_contentContext* MnemonicParser::Device_normalContext::device_content() {
-  return getRuleContext<MnemonicParser::Device_contentContext>(0);
-}
-
-tree::TerminalNode* MnemonicParser::Device_normalContext::ROPERATOR_INDEX() {
-  return getToken(MnemonicParser::ROPERATOR_INDEX, 0);
-}
-
-MnemonicParser::Index_valueContext* MnemonicParser::Device_normalContext::index_value() {
-  return getRuleContext<MnemonicParser::Index_valueContext>(0);
-}
-
-MnemonicParser::Device_wbitContext* MnemonicParser::Device_normalContext::device_wbit() {
-  return getRuleContext<MnemonicParser::Device_wbitContext>(0);
-}
-
 
 size_t MnemonicParser::Device_normalContext::getRuleIndex() const {
   return MnemonicParser::RuleDevice_normal;
 }
 
-void MnemonicParser::Device_normalContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterDevice_normal(this);
+void MnemonicParser::Device_normalContext::copyFrom(Device_normalContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
 }
 
-void MnemonicParser::Device_normalContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitDevice_normal(this);
+//----------------- Dev_nml_singleContext ------------------------------------------------------------------
+
+MnemonicParser::Device_contentContext* MnemonicParser::Dev_nml_singleContext::device_content() {
+  return getRuleContext<MnemonicParser::Device_contentContext>(0);
 }
 
+MnemonicParser::Dev_nml_singleContext::Dev_nml_singleContext(Device_normalContext *ctx) { copyFrom(ctx); }
 
-antlrcpp::Any MnemonicParser::Device_normalContext::accept(tree::ParseTreeVisitor *visitor) {
+void MnemonicParser::Dev_nml_singleContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDev_nml_single(this);
+}
+void MnemonicParser::Dev_nml_singleContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDev_nml_single(this);
+}
+
+antlrcpp::Any MnemonicParser::Dev_nml_singleContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
-    return parserVisitor->visitDevice_normal(this);
+    return parserVisitor->visitDev_nml_single(this);
   else
     return visitor->visitChildren(this);
 }
+//----------------- Dev_with_wbitContext ------------------------------------------------------------------
 
+MnemonicParser::Device_wbitContext* MnemonicParser::Dev_with_wbitContext::device_wbit() {
+  return getRuleContext<MnemonicParser::Device_wbitContext>(0);
+}
+
+MnemonicParser::Dev_with_wbitContext::Dev_with_wbitContext(Device_normalContext *ctx) { copyFrom(ctx); }
+
+void MnemonicParser::Dev_with_wbitContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDev_with_wbit(this);
+}
+void MnemonicParser::Dev_with_wbitContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDev_with_wbit(this);
+}
+
+antlrcpp::Any MnemonicParser::Dev_with_wbitContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
+    return parserVisitor->visitDev_with_wbit(this);
+  else
+    return visitor->visitChildren(this);
+}
+//----------------- Dev_with_idxContext ------------------------------------------------------------------
+
+MnemonicParser::Device_contentContext* MnemonicParser::Dev_with_idxContext::device_content() {
+  return getRuleContext<MnemonicParser::Device_contentContext>(0);
+}
+
+tree::TerminalNode* MnemonicParser::Dev_with_idxContext::ROPERATOR_INDEX() {
+  return getToken(MnemonicParser::ROPERATOR_INDEX, 0);
+}
+
+MnemonicParser::Index_valueContext* MnemonicParser::Dev_with_idxContext::index_value() {
+  return getRuleContext<MnemonicParser::Index_valueContext>(0);
+}
+
+MnemonicParser::Dev_with_idxContext::Dev_with_idxContext(Device_normalContext *ctx) { copyFrom(ctx); }
+
+void MnemonicParser::Dev_with_idxContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterDev_with_idx(this);
+}
+void MnemonicParser::Dev_with_idxContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitDev_with_idx(this);
+}
+
+antlrcpp::Any MnemonicParser::Dev_with_idxContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
+    return parserVisitor->visitDev_with_idx(this);
+  else
+    return visitor->visitChildren(this);
+}
 MnemonicParser::Device_normalContext* MnemonicParser::device_normal() {
   Device_normalContext *_localctx = _tracker.createInstance<Device_normalContext>(_ctx, getState());
   enterRule(_localctx, 20, MnemonicParser::RuleDevice_normal);
@@ -1023,6 +1079,7 @@ MnemonicParser::Device_normalContext* MnemonicParser::device_normal() {
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 11, _ctx)) {
     case 1: {
+      _localctx = dynamic_cast<Device_normalContext *>(_tracker.createInstance<MnemonicParser::Dev_nml_singleContext>(_localctx));
       enterOuterAlt(_localctx, 1);
       setState(119);
       device_content();
@@ -1030,6 +1087,7 @@ MnemonicParser::Device_normalContext* MnemonicParser::device_normal() {
     }
 
     case 2: {
+      _localctx = dynamic_cast<Device_normalContext *>(_tracker.createInstance<MnemonicParser::Dev_with_idxContext>(_localctx));
       enterOuterAlt(_localctx, 2);
       setState(120);
       device_content();
@@ -1041,6 +1099,7 @@ MnemonicParser::Device_normalContext* MnemonicParser::device_normal() {
     }
 
     case 3: {
+      _localctx = dynamic_cast<Device_normalContext *>(_tracker.createInstance<MnemonicParser::Dev_with_wbitContext>(_localctx));
       enterOuterAlt(_localctx, 3);
       setState(124);
       device_wbit();
@@ -1289,39 +1348,65 @@ MnemonicParser::Index_valueContext::Index_valueContext(ParserRuleContext *parent
   : ParserRuleContext(parent, invokingState) {
 }
 
-MnemonicParser::Index_value_oldContext* MnemonicParser::Index_valueContext::index_value_old() {
-  return getRuleContext<MnemonicParser::Index_value_oldContext>(0);
-}
-
-MnemonicParser::Device_zContext* MnemonicParser::Index_valueContext::device_z() {
-  return getRuleContext<MnemonicParser::Device_zContext>(0);
-}
-
 
 size_t MnemonicParser::Index_valueContext::getRuleIndex() const {
   return MnemonicParser::RuleIndex_value;
 }
 
-void MnemonicParser::Index_valueContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterIndex_value(this);
+void MnemonicParser::Index_valueContext::copyFrom(Index_valueContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
 }
 
-void MnemonicParser::Index_valueContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitIndex_value(this);
+//----------------- Index_value_device_zContext ------------------------------------------------------------------
+
+MnemonicParser::Device_zContext* MnemonicParser::Index_value_device_zContext::device_z() {
+  return getRuleContext<MnemonicParser::Device_zContext>(0);
 }
 
+MnemonicParser::Index_value_device_zContext::Index_value_device_zContext(Index_valueContext *ctx) { copyFrom(ctx); }
 
-antlrcpp::Any MnemonicParser::Index_valueContext::accept(tree::ParseTreeVisitor *visitor) {
+void MnemonicParser::Index_value_device_zContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterIndex_value_device_z(this);
+}
+void MnemonicParser::Index_value_device_zContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitIndex_value_device_z(this);
+}
+
+antlrcpp::Any MnemonicParser::Index_value_device_zContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
-    return parserVisitor->visitIndex_value(this);
+    return parserVisitor->visitIndex_value_device_z(this);
   else
     return visitor->visitChildren(this);
 }
+//----------------- Index_value_immediateContext ------------------------------------------------------------------
 
+MnemonicParser::Index_immContext* MnemonicParser::Index_value_immediateContext::index_imm() {
+  return getRuleContext<MnemonicParser::Index_immContext>(0);
+}
+
+MnemonicParser::Index_value_immediateContext::Index_value_immediateContext(Index_valueContext *ctx) { copyFrom(ctx); }
+
+void MnemonicParser::Index_value_immediateContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterIndex_value_immediate(this);
+}
+void MnemonicParser::Index_value_immediateContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitIndex_value_immediate(this);
+}
+
+antlrcpp::Any MnemonicParser::Index_value_immediateContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
+    return parserVisitor->visitIndex_value_immediate(this);
+  else
+    return visitor->visitChildren(this);
+}
 MnemonicParser::Index_valueContext* MnemonicParser::index_value() {
   Index_valueContext *_localctx = _tracker.createInstance<Index_valueContext>(_ctx, getState());
   enterRule(_localctx, 28, MnemonicParser::RuleIndex_value);
@@ -1336,13 +1421,15 @@ MnemonicParser::Index_valueContext* MnemonicParser::index_value() {
       case MnemonicParser::IMM_DEC_NUMBER_SHARP:
       case MnemonicParser::IMM_DEC_NUMBER_SIGN:
       case MnemonicParser::IMM_DEC_NUMBER_RAW: {
+        _localctx = dynamic_cast<Index_valueContext *>(_tracker.createInstance<MnemonicParser::Index_value_immediateContext>(_localctx));
         enterOuterAlt(_localctx, 1);
         setState(142);
-        index_value_old();
+        index_imm();
         break;
       }
 
       case MnemonicParser::INDEX_DEVICE: {
+        _localctx = dynamic_cast<Index_valueContext *>(_tracker.createInstance<MnemonicParser::Index_value_device_zContext>(_localctx));
         enterOuterAlt(_localctx, 2);
         setState(143);
         device_z();
@@ -1638,39 +1725,65 @@ MnemonicParser::Int_immediateContext::Int_immediateContext(ParserRuleContext *pa
   : ParserRuleContext(parent, invokingState) {
 }
 
-MnemonicParser::Decimal_immediateContext* MnemonicParser::Int_immediateContext::decimal_immediate() {
-  return getRuleContext<MnemonicParser::Decimal_immediateContext>(0);
-}
-
-tree::TerminalNode* MnemonicParser::Int_immediateContext::IMM_HEX_NUMBER() {
-  return getToken(MnemonicParser::IMM_HEX_NUMBER, 0);
-}
-
 
 size_t MnemonicParser::Int_immediateContext::getRuleIndex() const {
   return MnemonicParser::RuleInt_immediate;
 }
 
-void MnemonicParser::Int_immediateContext::enterRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->enterInt_immediate(this);
+void MnemonicParser::Int_immediateContext::copyFrom(Int_immediateContext *ctx) {
+  ParserRuleContext::copyFrom(ctx);
 }
 
-void MnemonicParser::Int_immediateContext::exitRule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
-  if (parserListener != nullptr)
-    parserListener->exitInt_immediate(this);
+//----------------- Int_immediate_hexContext ------------------------------------------------------------------
+
+tree::TerminalNode* MnemonicParser::Int_immediate_hexContext::IMM_HEX_NUMBER() {
+  return getToken(MnemonicParser::IMM_HEX_NUMBER, 0);
 }
 
+MnemonicParser::Int_immediate_hexContext::Int_immediate_hexContext(Int_immediateContext *ctx) { copyFrom(ctx); }
 
-antlrcpp::Any MnemonicParser::Int_immediateContext::accept(tree::ParseTreeVisitor *visitor) {
+void MnemonicParser::Int_immediate_hexContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInt_immediate_hex(this);
+}
+void MnemonicParser::Int_immediate_hexContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInt_immediate_hex(this);
+}
+
+antlrcpp::Any MnemonicParser::Int_immediate_hexContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
-    return parserVisitor->visitInt_immediate(this);
+    return parserVisitor->visitInt_immediate_hex(this);
   else
     return visitor->visitChildren(this);
 }
+//----------------- Int_immediate_decimalContext ------------------------------------------------------------------
 
+MnemonicParser::Decimal_immediateContext* MnemonicParser::Int_immediate_decimalContext::decimal_immediate() {
+  return getRuleContext<MnemonicParser::Decimal_immediateContext>(0);
+}
+
+MnemonicParser::Int_immediate_decimalContext::Int_immediate_decimalContext(Int_immediateContext *ctx) { copyFrom(ctx); }
+
+void MnemonicParser::Int_immediate_decimalContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInt_immediate_decimal(this);
+}
+void MnemonicParser::Int_immediate_decimalContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<MnemonicListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInt_immediate_decimal(this);
+}
+
+antlrcpp::Any MnemonicParser::Int_immediate_decimalContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
+    return parserVisitor->visitInt_immediate_decimal(this);
+  else
+    return visitor->visitChildren(this);
+}
 MnemonicParser::Int_immediateContext* MnemonicParser::int_immediate() {
   Int_immediateContext *_localctx = _tracker.createInstance<Int_immediateContext>(_ctx, getState());
   enterRule(_localctx, 38, MnemonicParser::RuleInt_immediate);
@@ -1686,6 +1799,7 @@ MnemonicParser::Int_immediateContext* MnemonicParser::int_immediate() {
       case MnemonicParser::IMM_DEC_NUMBER_SHARP:
       case MnemonicParser::IMM_DEC_NUMBER_SIGN:
       case MnemonicParser::IMM_DEC_NUMBER_RAW: {
+        _localctx = dynamic_cast<Int_immediateContext *>(_tracker.createInstance<MnemonicParser::Int_immediate_decimalContext>(_localctx));
         enterOuterAlt(_localctx, 1);
         setState(158);
         decimal_immediate();
@@ -1693,6 +1807,7 @@ MnemonicParser::Int_immediateContext* MnemonicParser::int_immediate() {
       }
 
       case MnemonicParser::IMM_HEX_NUMBER: {
+        _localctx = dynamic_cast<Int_immediateContext *>(_tracker.createInstance<MnemonicParser::Int_immediate_hexContext>(_localctx));
         enterOuterAlt(_localctx, 2);
         setState(159);
         match(MnemonicParser::IMM_HEX_NUMBER);
@@ -1941,8 +2056,8 @@ tree::TerminalNode* MnemonicParser::Rly_or_int_immediateContext::ROPERATOR_INDEX
   return getToken(MnemonicParser::ROPERATOR_INDEX, 0);
 }
 
-MnemonicParser::Index_value_oldContext* MnemonicParser::Rly_or_int_immediateContext::index_value_old() {
-  return getRuleContext<MnemonicParser::Index_value_oldContext>(0);
+MnemonicParser::Index_immContext* MnemonicParser::Rly_or_int_immediateContext::index_imm() {
+  return getRuleContext<MnemonicParser::Index_immContext>(0);
 }
 
 
@@ -1995,7 +2110,7 @@ MnemonicParser::Rly_or_int_immediateContext* MnemonicParser::rly_or_int_immediat
       setState(170);
       match(MnemonicParser::ROPERATOR_INDEX);
       setState(171);
-      index_value_old();
+      index_imm();
       break;
     }
 
@@ -2011,52 +2126,52 @@ MnemonicParser::Rly_or_int_immediateContext* MnemonicParser::rly_or_int_immediat
   return _localctx;
 }
 
-//----------------- Index_value_oldContext ------------------------------------------------------------------
+//----------------- Index_immContext ------------------------------------------------------------------
 
-MnemonicParser::Index_value_oldContext::Index_value_oldContext(ParserRuleContext *parent, size_t invokingState)
+MnemonicParser::Index_immContext::Index_immContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* MnemonicParser::Index_value_oldContext::IMM_DEC_NUMBER_RAW() {
+tree::TerminalNode* MnemonicParser::Index_immContext::IMM_DEC_NUMBER_RAW() {
   return getToken(MnemonicParser::IMM_DEC_NUMBER_RAW, 0);
 }
 
-tree::TerminalNode* MnemonicParser::Index_value_oldContext::IMM_DEC_NUMBER_SIGN() {
+tree::TerminalNode* MnemonicParser::Index_immContext::IMM_DEC_NUMBER_SIGN() {
   return getToken(MnemonicParser::IMM_DEC_NUMBER_SIGN, 0);
 }
 
-tree::TerminalNode* MnemonicParser::Index_value_oldContext::IMM_DEC_NUMBER_SHARP() {
+tree::TerminalNode* MnemonicParser::Index_immContext::IMM_DEC_NUMBER_SHARP() {
   return getToken(MnemonicParser::IMM_DEC_NUMBER_SHARP, 0);
 }
 
 
-size_t MnemonicParser::Index_value_oldContext::getRuleIndex() const {
-  return MnemonicParser::RuleIndex_value_old;
+size_t MnemonicParser::Index_immContext::getRuleIndex() const {
+  return MnemonicParser::RuleIndex_imm;
 }
 
-void MnemonicParser::Index_value_oldContext::enterRule(tree::ParseTreeListener *listener) {
+void MnemonicParser::Index_immContext::enterRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<MnemonicListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->enterIndex_value_old(this);
+    parserListener->enterIndex_imm(this);
 }
 
-void MnemonicParser::Index_value_oldContext::exitRule(tree::ParseTreeListener *listener) {
+void MnemonicParser::Index_immContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<MnemonicListener *>(listener);
   if (parserListener != nullptr)
-    parserListener->exitIndex_value_old(this);
+    parserListener->exitIndex_imm(this);
 }
 
 
-antlrcpp::Any MnemonicParser::Index_value_oldContext::accept(tree::ParseTreeVisitor *visitor) {
+antlrcpp::Any MnemonicParser::Index_immContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<MnemonicVisitor*>(visitor))
-    return parserVisitor->visitIndex_value_old(this);
+    return parserVisitor->visitIndex_imm(this);
   else
     return visitor->visitChildren(this);
 }
 
-MnemonicParser::Index_value_oldContext* MnemonicParser::index_value_old() {
-  Index_value_oldContext *_localctx = _tracker.createInstance<Index_value_oldContext>(_ctx, getState());
-  enterRule(_localctx, 48, MnemonicParser::RuleIndex_value_old);
+MnemonicParser::Index_immContext* MnemonicParser::index_imm() {
+  Index_immContext *_localctx = _tracker.createInstance<Index_immContext>(_ctx, getState());
+  enterRule(_localctx, 48, MnemonicParser::RuleIndex_imm);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -2100,22 +2215,22 @@ std::vector<std::string> MnemonicParser::_ruleNames = {
   "operand", "device", "device_z", "device_old_indirect", "device_normal", 
   "device_wbit", "device_content", "device_raw", "index_value", "bitpos", 
   "scope", "reference_operator", "immediate", "int_immediate", "fp_immediate", 
-  "str_immediate", "decimal_immediate", "rly_or_int_immediate", "index_value_old"
+  "str_immediate", "decimal_immediate", "rly_or_int_immediate", "index_imm"
 };
 
 std::vector<std::string> MnemonicParser::_literalNames = {
-  "", "", "", "", "", "", "", "", "", "", "'<'", "'>'", "'>>'", "'<<'", 
-  "", "", "", "", "", "", "", "'???'"
+  "", "", "", "", "", "", "", "", "", "", "'<'", "'<='", "'>'", "'>='", 
+  "'>>'", "'<<'", "", "", "", "", "", "", "", "'???'"
 };
 
 std::vector<std::string> MnemonicParser::_symbolicNames = {
   "", "DOT_SEGMENT", "DOT_SUFFIX", "ROPERATOR_INDEX", "SCOPE_LOCAL", "MUL_OP_REF", 
-  "ARITH_PLUS", "ARITH_MINUS", "ARITH_DIV", "ARITH_EQ", "ARITH_LT", "ARITH_GT", 
-  "ARITH_RSHIFT", "ARITH_LSHIFT", "ARITH_OR", "ARITH_AND", "ARITH_XOR", 
-  "PREFIX_OLD_INDIRECT", "DEV_TM", "NEWLINE", "SEPARATOR", "OPERAND_UNDEFINED", 
-  "STRING_IMMEDIATE", "IMM_DEC_NUMBER_K", "IMM_DEC_NUMBER_SHARP", "IMM_HEX_NUMBER", 
-  "IMM_DEC_NUMBER_SIGN", "IMM_DEC_NUMBER_RAW", "FP_EXPONENTIAL", "FP_DECIMAL", 
-  "INDEX_DEVICE", "OLD_INDIRECT", "IDENTIFIER"
+  "ARITH_PLUS", "ARITH_MINUS", "ARITH_DIV", "ARITH_EQ", "ARITH_LT", "ARITH_LT_EQ", 
+  "ARITH_GT", "ARITH_GT_EQ", "ARITH_RSHIFT", "ARITH_LSHIFT", "ARITH_OR", 
+  "ARITH_AND", "ARITH_XOR", "PREFIX_OLD_INDIRECT", "DEV_TM", "NEWLINE", 
+  "SEPARATOR", "OPERAND_UNDEFINED", "STRING_IMMEDIATE", "IMM_DEC_NUMBER_K", 
+  "IMM_DEC_NUMBER_SHARP", "IMM_HEX_NUMBER", "IMM_DEC_NUMBER_SIGN", "IMM_DEC_NUMBER_RAW", 
+  "FP_EXPONENTIAL", "FP_DECIMAL", "INDEX_DEVICE", "OLD_INDIRECT", "IDENTIFIER"
 };
 
 dfa::Vocabulary MnemonicParser::_vocabulary(_literalNames, _symbolicNames);
@@ -2138,7 +2253,7 @@ MnemonicParser::Initializer::Initializer() {
 
   _serializedATN = {
     0x3, 0x608b, 0xa72a, 0x8133, 0xb9ed, 0x417c, 0x3be7, 0x7786, 0x5964, 
-    0x3, 0x22, 0xb3, 0x4, 0x2, 0x9, 0x2, 0x4, 0x3, 0x9, 0x3, 0x4, 0x4, 0x9, 
+    0x3, 0x24, 0xb3, 0x4, 0x2, 0x9, 0x2, 0x4, 0x3, 0x9, 0x3, 0x4, 0x4, 0x9, 
     0x4, 0x4, 0x5, 0x9, 0x5, 0x4, 0x6, 0x9, 0x6, 0x4, 0x7, 0x9, 0x7, 0x4, 
     0x8, 0x9, 0x8, 0x4, 0x9, 0x9, 0x9, 0x4, 0xa, 0x9, 0xa, 0x4, 0xb, 0x9, 
     0xb, 0x4, 0xc, 0x9, 0xc, 0x4, 0xd, 0x9, 0xd, 0x4, 0xe, 0x9, 0xe, 0x4, 
@@ -2168,8 +2283,8 @@ MnemonicParser::Initializer::Initializer() {
     0x19, 0xaf, 0xa, 0x19, 0x3, 0x1a, 0x3, 0x1a, 0x3, 0x1a, 0x2, 0x2, 0x1b, 
     0x2, 0x4, 0x6, 0x8, 0xa, 0xc, 0xe, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1a, 
     0x1c, 0x1e, 0x20, 0x22, 0x24, 0x26, 0x28, 0x2a, 0x2c, 0x2e, 0x30, 0x32, 
-    0x2, 0x6, 0x3, 0x2, 0x7, 0x12, 0x4, 0x2, 0x3, 0x3, 0x1e, 0x1f, 0x4, 
-    0x2, 0x19, 0x1a, 0x1c, 0x1d, 0x4, 0x2, 0x1a, 0x1a, 0x1c, 0x1d, 0x2, 
+    0x2, 0x6, 0x3, 0x2, 0x7, 0x14, 0x4, 0x2, 0x3, 0x3, 0x20, 0x21, 0x4, 
+    0x2, 0x1b, 0x1c, 0x1e, 0x1f, 0x4, 0x2, 0x1c, 0x1c, 0x1e, 0x1f, 0x2, 
     0xb2, 0x2, 0x3a, 0x3, 0x2, 0x2, 0x2, 0x4, 0x45, 0x3, 0x2, 0x2, 0x2, 
     0x6, 0x5a, 0x3, 0x2, 0x2, 0x2, 0x8, 0x64, 0x3, 0x2, 0x2, 0x2, 0xa, 0x66, 
     0x3, 0x2, 0x2, 0x2, 0xc, 0x68, 0x3, 0x2, 0x2, 0x2, 0xe, 0x6d, 0x3, 0x2, 
@@ -2183,7 +2298,7 @@ MnemonicParser::Initializer::Initializer() {
     0x2, 0x2e, 0xa8, 0x3, 0x2, 0x2, 0x2, 0x30, 0xae, 0x3, 0x2, 0x2, 0x2, 
     0x32, 0xb0, 0x3, 0x2, 0x2, 0x2, 0x34, 0x36, 0x5, 0x4, 0x3, 0x2, 0x35, 
     0x34, 0x3, 0x2, 0x2, 0x2, 0x35, 0x36, 0x3, 0x2, 0x2, 0x2, 0x36, 0x37, 
-    0x3, 0x2, 0x2, 0x2, 0x37, 0x39, 0x7, 0x15, 0x2, 0x2, 0x38, 0x35, 0x3, 
+    0x3, 0x2, 0x2, 0x2, 0x37, 0x39, 0x7, 0x17, 0x2, 0x2, 0x38, 0x35, 0x3, 
     0x2, 0x2, 0x2, 0x39, 0x3c, 0x3, 0x2, 0x2, 0x2, 0x3a, 0x38, 0x3, 0x2, 
     0x2, 0x2, 0x3a, 0x3b, 0x3, 0x2, 0x2, 0x2, 0x3b, 0x3e, 0x3, 0x2, 0x2, 
     0x2, 0x3c, 0x3a, 0x3, 0x2, 0x2, 0x2, 0x3d, 0x3f, 0x5, 0x4, 0x3, 0x2, 
@@ -2200,26 +2315,26 @@ MnemonicParser::Initializer::Initializer() {
     0x2, 0x2, 0x51, 0x53, 0x5, 0x6, 0x4, 0x2, 0x52, 0x51, 0x3, 0x2, 0x2, 
     0x2, 0x53, 0x56, 0x3, 0x2, 0x2, 0x2, 0x54, 0x52, 0x3, 0x2, 0x2, 0x2, 
     0x54, 0x55, 0x3, 0x2, 0x2, 0x2, 0x55, 0x58, 0x3, 0x2, 0x2, 0x2, 0x56, 
-    0x54, 0x3, 0x2, 0x2, 0x2, 0x57, 0x59, 0x7, 0x15, 0x2, 0x2, 0x58, 0x57, 
+    0x54, 0x3, 0x2, 0x2, 0x2, 0x57, 0x59, 0x7, 0x17, 0x2, 0x2, 0x58, 0x57, 
     0x3, 0x2, 0x2, 0x2, 0x58, 0x59, 0x3, 0x2, 0x2, 0x2, 0x59, 0x5, 0x3, 
-    0x2, 0x2, 0x2, 0x5a, 0x5b, 0x7, 0x16, 0x2, 0x2, 0x5b, 0x7, 0x3, 0x2, 
-    0x2, 0x2, 0x5c, 0x65, 0x7, 0x22, 0x2, 0x2, 0x5d, 0x5e, 0x7, 0x22, 0x2, 
-    0x2, 0x5e, 0x65, 0x5, 0xc, 0x7, 0x2, 0x5f, 0x60, 0x7, 0x22, 0x2, 0x2, 
-    0x60, 0x62, 0x5, 0xa, 0x6, 0x2, 0x61, 0x63, 0x5, 0xc, 0x7, 0x2, 0x62, 
+    0x2, 0x2, 0x2, 0x5a, 0x5b, 0x7, 0x18, 0x2, 0x2, 0x5b, 0x7, 0x3, 0x2, 
+    0x2, 0x2, 0x5c, 0x65, 0x7, 0x24, 0x2, 0x2, 0x5d, 0x5e, 0x7, 0x24, 0x2, 
+    0x2, 0x5e, 0x65, 0x7, 0x4, 0x2, 0x2, 0x5f, 0x60, 0x7, 0x24, 0x2, 0x2, 
+    0x60, 0x62, 0x5, 0xa, 0x6, 0x2, 0x61, 0x63, 0x7, 0x4, 0x2, 0x2, 0x62, 
     0x61, 0x3, 0x2, 0x2, 0x2, 0x62, 0x63, 0x3, 0x2, 0x2, 0x2, 0x63, 0x65, 
     0x3, 0x2, 0x2, 0x2, 0x64, 0x5c, 0x3, 0x2, 0x2, 0x2, 0x64, 0x5d, 0x3, 
     0x2, 0x2, 0x2, 0x64, 0x5f, 0x3, 0x2, 0x2, 0x2, 0x65, 0x9, 0x3, 0x2, 
     0x2, 0x2, 0x66, 0x67, 0x9, 0x2, 0x2, 0x2, 0x67, 0xb, 0x3, 0x2, 0x2, 
-    0x2, 0x68, 0x69, 0x7, 0x4, 0x2, 0x2, 0x69, 0xd, 0x3, 0x2, 0x2, 0x2, 
+    0x2, 0x68, 0x69, 0x3, 0x2, 0x2, 0x2, 0x69, 0xd, 0x3, 0x2, 0x2, 0x2, 
     0x6a, 0x6e, 0x5, 0x10, 0x9, 0x2, 0x6b, 0x6e, 0x5, 0x26, 0x14, 0x2, 0x6c, 
-    0x6e, 0x7, 0x17, 0x2, 0x2, 0x6d, 0x6a, 0x3, 0x2, 0x2, 0x2, 0x6d, 0x6b, 
+    0x6e, 0x7, 0x19, 0x2, 0x2, 0x6d, 0x6a, 0x3, 0x2, 0x2, 0x2, 0x6d, 0x6b, 
     0x3, 0x2, 0x2, 0x2, 0x6d, 0x6c, 0x3, 0x2, 0x2, 0x2, 0x6e, 0xf, 0x3, 
     0x2, 0x2, 0x2, 0x6f, 0x74, 0x5, 0x14, 0xb, 0x2, 0x70, 0x74, 0x5, 0x12, 
     0xa, 0x2, 0x71, 0x74, 0x5, 0x16, 0xc, 0x2, 0x72, 0x74, 0x5, 0x30, 0x19, 
     0x2, 0x73, 0x6f, 0x3, 0x2, 0x2, 0x2, 0x73, 0x70, 0x3, 0x2, 0x2, 0x2, 
     0x73, 0x71, 0x3, 0x2, 0x2, 0x2, 0x73, 0x72, 0x3, 0x2, 0x2, 0x2, 0x74, 
-    0x11, 0x3, 0x2, 0x2, 0x2, 0x75, 0x76, 0x7, 0x20, 0x2, 0x2, 0x76, 0x13, 
-    0x3, 0x2, 0x2, 0x2, 0x77, 0x78, 0x7, 0x21, 0x2, 0x2, 0x78, 0x15, 0x3, 
+    0x11, 0x3, 0x2, 0x2, 0x2, 0x75, 0x76, 0x7, 0x22, 0x2, 0x2, 0x76, 0x13, 
+    0x3, 0x2, 0x2, 0x2, 0x77, 0x78, 0x7, 0x23, 0x2, 0x2, 0x78, 0x15, 0x3, 
     0x2, 0x2, 0x2, 0x79, 0x80, 0x5, 0x1a, 0xe, 0x2, 0x7a, 0x7b, 0x5, 0x1a, 
     0xe, 0x2, 0x7b, 0x7c, 0x7, 0x5, 0x2, 0x2, 0x7c, 0x7d, 0x5, 0x1e, 0x10, 
     0x2, 0x7d, 0x80, 0x3, 0x2, 0x2, 0x2, 0x7e, 0x80, 0x5, 0x18, 0xd, 0x2, 
@@ -2229,8 +2344,8 @@ MnemonicParser::Initializer::Initializer() {
     0x2, 0x2, 0x2, 0x84, 0x89, 0x5, 0x1c, 0xf, 0x2, 0x85, 0x86, 0x5, 0x24, 
     0x13, 0x2, 0x86, 0x87, 0x5, 0x1c, 0xf, 0x2, 0x87, 0x89, 0x3, 0x2, 0x2, 
     0x2, 0x88, 0x84, 0x3, 0x2, 0x2, 0x2, 0x88, 0x85, 0x3, 0x2, 0x2, 0x2, 
-    0x89, 0x1b, 0x3, 0x2, 0x2, 0x2, 0x8a, 0x8f, 0x7, 0x22, 0x2, 0x2, 0x8b, 
-    0x8c, 0x5, 0x22, 0x12, 0x2, 0x8c, 0x8d, 0x7, 0x22, 0x2, 0x2, 0x8d, 0x8f, 
+    0x89, 0x1b, 0x3, 0x2, 0x2, 0x2, 0x8a, 0x8f, 0x7, 0x24, 0x2, 0x2, 0x8b, 
+    0x8c, 0x5, 0x22, 0x12, 0x2, 0x8c, 0x8d, 0x7, 0x24, 0x2, 0x2, 0x8d, 0x8f, 
     0x3, 0x2, 0x2, 0x2, 0x8e, 0x8a, 0x3, 0x2, 0x2, 0x2, 0x8e, 0x8b, 0x3, 
     0x2, 0x2, 0x2, 0x8f, 0x1d, 0x3, 0x2, 0x2, 0x2, 0x90, 0x93, 0x5, 0x32, 
     0x1a, 0x2, 0x91, 0x93, 0x5, 0x12, 0xa, 0x2, 0x92, 0x90, 0x3, 0x2, 0x2, 
@@ -2242,12 +2357,12 @@ MnemonicParser::Initializer::Initializer() {
     0x2a, 0x16, 0x2, 0x9d, 0x9f, 0x5, 0x2c, 0x17, 0x2, 0x9e, 0x9a, 0x3, 
     0x2, 0x2, 0x2, 0x9e, 0x9b, 0x3, 0x2, 0x2, 0x2, 0x9e, 0x9c, 0x3, 0x2, 
     0x2, 0x2, 0x9e, 0x9d, 0x3, 0x2, 0x2, 0x2, 0x9f, 0x27, 0x3, 0x2, 0x2, 
-    0x2, 0xa0, 0xa3, 0x5, 0x2e, 0x18, 0x2, 0xa1, 0xa3, 0x7, 0x1b, 0x2, 0x2, 
+    0x2, 0xa0, 0xa3, 0x5, 0x2e, 0x18, 0x2, 0xa1, 0xa3, 0x7, 0x1d, 0x2, 0x2, 
     0xa2, 0xa0, 0x3, 0x2, 0x2, 0x2, 0xa2, 0xa1, 0x3, 0x2, 0x2, 0x2, 0xa3, 
     0x29, 0x3, 0x2, 0x2, 0x2, 0xa4, 0xa5, 0x9, 0x3, 0x2, 0x2, 0xa5, 0x2b, 
-    0x3, 0x2, 0x2, 0x2, 0xa6, 0xa7, 0x7, 0x18, 0x2, 0x2, 0xa7, 0x2d, 0x3, 
+    0x3, 0x2, 0x2, 0x2, 0xa6, 0xa7, 0x7, 0x1a, 0x2, 0x2, 0xa7, 0x2d, 0x3, 
     0x2, 0x2, 0x2, 0xa8, 0xa9, 0x9, 0x4, 0x2, 0x2, 0xa9, 0x2f, 0x3, 0x2, 
-    0x2, 0x2, 0xaa, 0xaf, 0x7, 0x1d, 0x2, 0x2, 0xab, 0xac, 0x7, 0x1d, 0x2, 
+    0x2, 0x2, 0xaa, 0xaf, 0x7, 0x1f, 0x2, 0x2, 0xab, 0xac, 0x7, 0x1f, 0x2, 
     0x2, 0xac, 0xad, 0x7, 0x5, 0x2, 0x2, 0xad, 0xaf, 0x5, 0x32, 0x1a, 0x2, 
     0xae, 0xaa, 0x3, 0x2, 0x2, 0x2, 0xae, 0xab, 0x3, 0x2, 0x2, 0x2, 0xaf, 
     0x31, 0x3, 0x2, 0x2, 0x2, 0xb0, 0xb1, 0x9, 0x5, 0x2, 0x2, 0xb1, 0x33, 

@@ -14,12 +14,12 @@ public:
   enum {
     DOT_SEGMENT = 1, DOT_SUFFIX = 2, ROPERATOR_INDEX = 3, SCOPE_LOCAL = 4, 
     MUL_OP_REF = 5, ARITH_PLUS = 6, ARITH_MINUS = 7, ARITH_DIV = 8, ARITH_EQ = 9, 
-    ARITH_LT = 10, ARITH_LT_EQ = 11, ARITH_GT = 12, ARITH_GT_EQ = 13, ARITH_RSHIFT = 14, 
-    ARITH_LSHIFT = 15, ARITH_OR = 16, ARITH_AND = 17, ARITH_XOR = 18, PREFIX_OLD_INDIRECT = 19, 
-    DEV_TM = 20, NEWLINE = 21, SEPARATOR = 22, OPERAND_UNDEFINED = 23, STRING_IMMEDIATE = 24, 
-    IMM_DEC_NUMBER_K = 25, IMM_DEC_NUMBER_SHARP = 26, IMM_HEX_NUMBER = 27, 
-    IMM_DEC_NUMBER_SIGN = 28, IMM_DEC_NUMBER_RAW = 29, FP_EXPONENTIAL = 30, 
-    FP_DECIMAL = 31, INDEX_DEVICE = 32, OLD_INDIRECT = 33, IDENTIFIER = 34
+    ARITH_LT = 10, ARITH_GT = 11, ARITH_RSHIFT = 12, ARITH_LSHIFT = 13, 
+    ARITH_OR = 14, ARITH_AND = 15, ARITH_XOR = 16, PREFIX_OLD_INDIRECT = 17, 
+    DEV_TM = 18, NEWLINE = 19, SEPARATOR = 20, OPERAND_UNDEFINED = 21, STRING_IMMEDIATE = 22, 
+    IMM_DEC_NUMBER_K = 23, IMM_DEC_NUMBER_SHARP = 24, IMM_HEX_NUMBER = 25, 
+    IMM_DEC_NUMBER_SIGN = 26, IMM_DEC_NUMBER_RAW = 27, FP_EXPONENTIAL = 28, 
+    FP_DECIMAL = 29, INDEX_DEVICE = 30, OLD_INDIRECT = 31, IDENTIFIER = 32
   };
 
   enum {
@@ -140,7 +140,7 @@ public:
     Inst_with_suffixContext(InstructionContext *ctx);
 
     antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *DOT_SUFFIX();
+    SuffixContext *suffix();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -164,7 +164,7 @@ public:
 
     antlr4::tree::TerminalNode *IDENTIFIER();
     Arith_operatorContext *arith_operator();
-    antlr4::tree::TerminalNode *DOT_SUFFIX();
+    SuffixContext *suffix();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
@@ -183,9 +183,7 @@ public:
     antlr4::tree::TerminalNode *ARITH_DIV();
     antlr4::tree::TerminalNode *ARITH_EQ();
     antlr4::tree::TerminalNode *ARITH_LT();
-    antlr4::tree::TerminalNode *ARITH_LT_EQ();
     antlr4::tree::TerminalNode *ARITH_GT();
-    antlr4::tree::TerminalNode *ARITH_GT_EQ();
     antlr4::tree::TerminalNode *ARITH_RSHIFT();
     antlr4::tree::TerminalNode *ARITH_LSHIFT();
     antlr4::tree::TerminalNode *ARITH_AND();
@@ -205,6 +203,7 @@ public:
   public:
     SuffixContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *DOT_SUFFIX();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -481,36 +480,15 @@ public:
   class  Int_immediateContext : public antlr4::ParserRuleContext {
   public:
     Int_immediateContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-   
-    Int_immediateContext() = default;
-    void copyFrom(Int_immediateContext *context);
-    using antlr4::ParserRuleContext::copyFrom;
-
     virtual size_t getRuleIndex() const override;
-
-   
-  };
-
-  class  Int_immediate_hexContext : public Int_immediateContext {
-  public:
-    Int_immediate_hexContext(Int_immediateContext *ctx);
-
-    antlr4::tree::TerminalNode *IMM_HEX_NUMBER();
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
-  class  Int_immediate_decimalContext : public Int_immediateContext {
-  public:
-    Int_immediate_decimalContext(Int_immediateContext *ctx);
-
     Decimal_immediateContext *decimal_immediate();
+    antlr4::tree::TerminalNode *IMM_HEX_NUMBER();
+
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
   };
 
   Int_immediateContext* int_immediate();

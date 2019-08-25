@@ -88,11 +88,8 @@ public:
   virtual void enterImmediate(MnemonicParser::ImmediateContext * /*ctx*/) override { }
   virtual void exitImmediate(MnemonicParser::ImmediateContext * /*ctx*/) override { }
 
-  virtual void enterInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext * /*ctx*/) override { }
-  virtual void exitInt_immediate_decimal(MnemonicParser::Int_immediate_decimalContext * /*ctx*/) override { }
-
-  virtual void enterInt_immediate_hex(MnemonicParser::Int_immediate_hexContext * /*ctx*/) override { }
-  virtual void exitInt_immediate_hex(MnemonicParser::Int_immediate_hexContext * /*ctx*/) override { }
+  virtual void enterInt_immediate(MnemonicParser::Int_immediateContext * /*ctx*/) override { }
+  virtual void exitInt_immediate(MnemonicParser::Int_immediateContext * /*ctx*/) override { }
 
   virtual void enterFp_immediate(MnemonicParser::Fp_immediateContext * /*ctx*/) override { }
   virtual void exitFp_immediate(MnemonicParser::Fp_immediateContext * /*ctx*/) override { }
