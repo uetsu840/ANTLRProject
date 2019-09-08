@@ -5,10 +5,19 @@ input
     ;
 
 statement
-    : if_statement
+    : return_statement
+    | if_statement
     | while_statement
     | for_statement
+    | repeat_statement
+    | case_statement
     | expression STATEMENT_SEPARATOR
+    | STATEMENT_SEPARATOR
+    ;
+
+/* return */
+return_statement
+    : TOKEN_RETURN
     ;
 
 /* if */
@@ -16,7 +25,7 @@ if_statement
     : TOKEN_IF expression TOKEN_IF_THEN
         statement+
         (TOKEN_IF_ELIF statement)*
-        (TOKEN_IF_ELSE statement)?
+        (TOKEN_ELSE statement)?
         TOKEN_IF_END
     ;
 
@@ -34,13 +43,33 @@ for_statement
         TOKEN_FOR_END
     ;
 
+/* repeat */
+repeat_statement
+    : TOKEN_REPEAT
+        statement+
+        TOKEN_UNTIL expression TOKEN_REPEAT_END
+    ;
+
+/* case */
+case_statement
+    : TOKEN_CASE variable TOKEN_OF
+        (token_case_label statement+)+
+        TOKEN_CASE_END
+    ;
+
+token_case_label
+    : (value (TOKEN_CASE_VAL_SEP value)* (TOKEN_CASE_LBL_SEP)) +
+    | TOKEN_ELSE
+    ;
+
 expression
     : immediate
+    | variable
     | TOKEN_OPEN_BRACE expression TOKEN_CLOSE_BRACE
-    | expression assign_operator expression
-    | expression compare_operator expression
     | expression arith_operator_muldiv expression
     | expression arith_operator_addsub expression
+    | expression compare_operator expression
+    | expression assign_operator expression
     | function_call
     ;
 
@@ -91,12 +120,16 @@ arith_operator_addsub
     | TOKEN_MINUS
     ;
 
+value
+    : immediate
+    | variable
+    ;
+
 immediate
     : TOKEN_DEC_NUMBER
     | TOKEN_HEX_NUMBER
     | TOKEN_OCT_NUMBER
     | TOKEN_BIN_NUMBER
-    | IDENTIFIER
     ;
 
 variable
@@ -111,6 +144,7 @@ TOKEN_CMP_GT_EQ     : GT EQUAL;
 TOKEN_CMP_LT_EQ     : LT EQUAL;
 TOKEN_CMP_GT        : GT;
 TOKEN_CMP_LT        : LT;
+TOKEN_RETURN        : 'RETURN';
 TOKEN_FOR           : 'FOR';
 TOKEN_FOR_END       : 'END_FOR';
 TOKEN_WHILE         : 'WHILE';
@@ -120,10 +154,16 @@ TOKEN_WHILE_END     : 'END_WHILE';
 TOKEN_IF            : 'IF';
 TOKEN_IF_THEN       : 'THEN';
 TOKEN_IF_ELIF       : 'ELSIF';
-TOKEN_IF_ELSE       : 'ELSE';
+TOKEN_ELSE          : 'ELSE';
 TOKEN_IF_END        : 'END_IF';
 TOKEN_SELECT        : 'SELECT';
 TOKEN_SELECT_END    : 'END_SELECT';
+TOKEN_REPEAT        : 'REPEAT';
+TOKEN_UNTIL         : 'UNTIL';
+TOKEN_REPEAT_END    : 'END_REPEAT';
+TOKEN_CASE          : 'CASE';
+TOKEN_OF            : 'OF';
+TOKEN_CASE_END      : 'END_CASE';
 TOKEN_OPEN_BRACE    : OPEN_BLACE;
 TOKEN_CLOSE_BRACE   : CLOSE_BLACE;
 TOKEN_HEX_NUMBER    : HEX_PREFIX HEX_NUMBER;
@@ -135,10 +175,12 @@ TOKEN_MINUS         : MINUS;
 TOKEN_MUL           : ASTERISK;
 TOKEN_DIV           : SLASH;
 TOKEN_ARG_SEP       : COMMA;
+TOKEN_CASE_VAL_SEP  : COMMA;
+TOKEN_CASE_LBL_SEP  : COLLON;
 
 STATEMENT_SEPARATOR : SEMICOLLON;
 IDENTIFIER
-    : ALPHABETS (DEC_DIGIT | ALPHABETS | '_')+;
+    : ALPHABETS (DEC_DIGIT | ALPHABETS | '_')*;
 
 fragment HEX_NUMBER     : HEX_DIGIT+;
 fragment DEC_NUMBER     : DEC_DIGIT+;
