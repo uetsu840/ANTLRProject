@@ -6,14 +6,23 @@ input
     ;
 
 statement
+    : single_statement STATEMENT_SEPARATOR
+    ;
+
+single_statement
     : return_statement
     | if_statement
     | while_statement
     | for_statement
     | repeat_statement
     | case_statement
-    | expression STATEMENT_SEPARATOR
-    | STATEMENT_SEPARATOR
+    | assign_statement
+    | function_call_statement
+    ;
+
+/* function_call */
+function_call_statement
+    : function_call
     ;
 
 /* return */
@@ -64,14 +73,20 @@ token_case_label
     | TOKEN_ELSE
     ;
 
+assign_statement
+    : variable assign_operator expression
+    ;
+
 expression
-    : immediate
-    | (unary_operator_pre)? variable (unary_operator_post)?
+    : value
     | TOKEN_OPEN_BRACE expression TOKEN_CLOSE_BRACE
     | expression arith_operator_muldiv expression
     | expression arith_operator_addsub expression
-    | expression compare_operator expression
-    | expression assign_operator expression
+    | expression compare_operator_cmp expression
+    | expression compare_operator_eq expression
+    | expression TOKEN_AND expression
+    | expression TOKEN_XOR expression
+    | expression TOKEN_OR expression
     | function_call
     ;
 
@@ -100,26 +115,27 @@ assign_operator
     : TOKEN_ASSIGN_RL
     ;
 
-compare_operator
-    : TOKEN_CMP_EQ
-    | TOKEN_CMP_GT_EQ
+compare_operator_cmp
+    : TOKEN_CMP_GT_EQ
     | TOKEN_CMP_LT_EQ
     | TOKEN_CMP_GT
     | TOKEN_CMP_LT
+    ;
+
+compare_operator_eq
+    : TOKEN_CMP_EQ
+    | TOKEN_CMP_NEQ
     ;
 
 assign_operator_out
     : TOKEN_ASSIGN_LR
     ;
 
-unary_operator_post
-    : TOKEN_INCREMENT
-    | TOKEN_DECREMENT
-    ;
 
 unary_operator_pre
     : TOKEN_PLUS
     | TOKEN_MINUS
+    | TOKEN_NOT
     ;
 
 arith_operator_muldiv
@@ -133,7 +149,8 @@ arith_operator_addsub
     ;
 
 value
-    : immediate
+    : unary_operator_pre value
+    | immediate
     | variable
     ;
 
