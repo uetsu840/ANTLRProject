@@ -53,18 +53,19 @@ repeat_statement
 /* case */
 case_statement
     : TOKEN_CASE variable TOKEN_OF
-        (token_case_label statement+)+
+        (token_case_label+ statement+)+
         TOKEN_CASE_END
     ;
 
 token_case_label
-    : (value (TOKEN_CASE_VAL_SEP value)* (TOKEN_CASE_LBL_SEP)) +
+    : value (TOKEN_CASE_VAL_SEP value)* TOKEN_CASE_LBL_SEP      // 1:  / 1, 3, 5:
+    | value TOKEN_CASE_RANGE value TOKEN_CASE_LBL_SEP           // 3..5:
     | TOKEN_ELSE
     ;
 
 expression
     : immediate
-    | variable
+    | (unary_operator_pre)? variable (unary_operator_post)?
     | TOKEN_OPEN_BRACE expression TOKEN_CLOSE_BRACE
     | expression arith_operator_muldiv expression
     | expression arith_operator_addsub expression
@@ -110,6 +111,16 @@ assign_operator_out
     : TOKEN_ASSIGN_LR
     ;
 
+unary_operator_post
+    : TOKEN_INCREMENT
+    | TOKEN_DECREMENT
+    ;
+
+unary_operator_pre
+    : TOKEN_PLUS
+    | TOKEN_MINUS
+    ;
+
 arith_operator_muldiv
     : TOKEN_MUL
     | TOKEN_DIV
@@ -126,7 +137,7 @@ value
     ;
 
 immediate
-    : TOKEN_DEC_NUMBER
+    : TOKEN_MINUS? TOKEN_DEC_NUMBER
     | TOKEN_HEX_NUMBER
     | TOKEN_OCT_NUMBER
     | TOKEN_BIN_NUMBER
@@ -167,9 +178,12 @@ TOKEN_CASE_END      : 'END_CASE';
 TOKEN_OPEN_BRACE    : OPEN_BLACE;
 TOKEN_CLOSE_BRACE   : CLOSE_BLACE;
 TOKEN_HEX_NUMBER    : HEX_PREFIX HEX_NUMBER;
-TOKEN_DEC_NUMBER    : DEC_PREFIX DEC_NUMBER | DEC_NUMBER;
+TOKEN_DEC_NUMBER    : DEC_NUMBER;
 TOKEN_OCT_NUMBER    : OCT_PREFIX OCT_NUMBER;
 TOKEN_BIN_NUMBER    : BIN_PREFIX BIN_NUMBER;
+TOKEN_INCREMENT     : PLUS PLUS;
+TOKEN_DECREMENT     : MINUS MINUS;
+TOKEN_CASE_RANGE    : DOT DOT;
 TOKEN_PLUS          : PLUS;
 TOKEN_MINUS         : MINUS;
 TOKEN_MUL           : ASTERISK;
@@ -187,7 +201,6 @@ fragment DEC_NUMBER     : DEC_DIGIT+;
 fragment OCT_NUMBER     : OCT_DIGIT+;
 fragment BIN_NUMBER     : BIN_DIGIT+;
 fragment HEX_PREFIX     : '16#';
-fragment DEC_PREFIX     : '10#';
 fragment OCT_PREFIX     : '8#';
 fragment BIN_PREFIX     : '2#';
 fragment DEC_DIGIT      : [0-9];
