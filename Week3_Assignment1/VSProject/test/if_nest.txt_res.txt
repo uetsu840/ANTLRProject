@@ -1,13 +1,13 @@
 IF bCond1 THEN
-IF bCond3 THEN
-uiHoge=5
-END IF
-uiFuga=3
-uiFuga=3
-uiFuga=3
-uiFuga=3
+	IF bCond3 THEN
+		uiHoge=5
+	END IF
+	uiFuga=3
+	uiFuga=3
+	uiFuga=3
+	uiFuga=3
 ELSE IF bCond2 THEN
-uiPiyo=5
+	uiPiyo=5
 ELSE 
-uiVal1=10
+	uiVal1=10
 END IF

@@ -17,13 +17,31 @@ struct ConvertResult {
 };
 
 
-
-
 class Visitor : public STLanguageParserBaseVisitor {
 protected:
-	antlrcpp::Any defaultResult() override { return ConvertResult{ false, new string("---\0") }; }
+	antlrcpp::Any defaultResult() override { return ConvertResult{ false, new string("") }; };
+
+private:
+	int indent_level;
+	void incIndent(void) {
+		indent_level++;
+	}
+	void decIndent(void) {
+		if (0 < indent_level) {
+			indent_level--;
+		}
+	}
+	string getIndentStr(void) {
+		string ret;
+		for (int i = 0; i < indent_level; i++) {
+			ret += "\t";
+		}
+		return ret;
+	}
+
 public:
 	antlrcpp::Any visitInput(STLanguageParser::InputContext* ctx) override {
+		indent_level = 0;
 
 		string result;
 		for (auto statement : ctx->statement()) {
@@ -58,20 +76,22 @@ public:
 	*	IF
 	*/
 	antlrcpp::Any visitIf_statement(STLanguageParser::If_statementContext* ctx) override {
-		printf("visiting... If statement\n");
-		
+
 		string str;
 		auto res_main = visit(ctx->if_statement_main_clause()).as<ConvertResult>();
-		str += "IF " +  *(res_main.pScript);
+		str += getIndentStr() + "IF " +  *(res_main.pScript);
 		for (auto clause_elif: ctx->if_statement_elif_clause()) {
 			auto res_elif = visit(clause_elif).as<ConvertResult>();
-			str += "ELSE IF " + *(res_elif.pScript);
+			str += getIndentStr() + "ELSE IF " + *(res_elif.pScript);
 		}
 		if (ctx->if_statement_else_clause()) {
 			auto res_else = visit(ctx->if_statement_else_clause()).as<ConvertResult>();
-			str += "ELSE \n" + *(res_else.pScript);
+			str += getIndentStr() + "ELSE \n";
+			incIndent();
+			str += getIndentStr() + *(res_else.pScript);
+			decIndent();
 		}
-		str += "END IF\n";
+		str += getIndentStr() +  "END IF\n";
 
 		ConvertResult res;
 		res.pScript = new string(str);
@@ -79,13 +99,11 @@ public:
 	}
 
 	antlrcpp::Any visitIf_statement_main_clause(STLanguageParser::If_statement_main_clauseContext *ctx) override {
-		printf("visiting.... if(main)\n");
 		auto res = visit(ctx->if_clause()).as<ConvertResult>();
 		return res;
 	}
 
 	antlrcpp::Any visitIf_statement_elif_clause(STLanguageParser::If_statement_elif_clauseContext* ctx) override {
-		printf("visiting.... if(elsif)\n");
 		auto res = visit(ctx->if_clause()).as<ConvertResult>();
 		return res;
 	}
@@ -104,17 +122,16 @@ public:
 	}
 
 	antlrcpp::Any visitIf_clause(STLanguageParser::If_clauseContext* ctx) override {
-		printf("visiting.... if clause\n");
-
 		string str;
 
 		auto expression = visitExpression(ctx->expression()).as<ConvertResult>();
 		str += *(expression.pScript) + " THEN\n";
+		incIndent();
 		for (auto statement: ctx->statement()) {
 			auto stmt = visitStatement(statement).as<ConvertResult>();
 			str += *(stmt.pScript);
 		}
-		printf("::::%s\n", str.c_str());
+		decIndent();
 		
 		ConvertResult res;
 		res.pScript = new string(str);
@@ -154,7 +171,7 @@ public:
 		auto expr = visitExpression(ctx->expression()).as<ConvertResult>();
 
 		ConvertResult res;
-		res.pScript = new string(*(var.pScript) + "=" + *(expr.pScript) + "\n");
+		res.pScript = new string(getIndentStr() + *(var.pScript) + "=" + *(expr.pScript) + "\n");
 		return res;
 	}
 
