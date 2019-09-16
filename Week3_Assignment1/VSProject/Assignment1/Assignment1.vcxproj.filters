@@ -21,35 +21,23 @@
     <ClCompile Include="Assignment1.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Operand.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="gen\MnemonicBaseListener.cpp">
+    <ClCompile Include="gen\STLanguageLexer.cpp">
       <Filter>ソース ファイル\gen</Filter>
     </ClCompile>
-    <ClCompile Include="gen\MnemonicBaseVisitor.cpp">
+    <ClCompile Include="gen\STLanguageParser.cpp">
       <Filter>ソース ファイル\gen</Filter>
     </ClCompile>
-    <ClCompile Include="gen\MnemonicLexer.cpp">
+    <ClCompile Include="gen\STLanguageParserBaseListener.cpp">
       <Filter>ソース ファイル\gen</Filter>
     </ClCompile>
-    <ClCompile Include="gen\MnemonicListener.cpp">
+    <ClCompile Include="gen\STLanguageParserBaseVisitor.cpp">
       <Filter>ソース ファイル\gen</Filter>
     </ClCompile>
-    <ClCompile Include="gen\MnemonicParser.cpp">
+    <ClCompile Include="gen\STLanguageParserListener.cpp">
       <Filter>ソース ファイル\gen</Filter>
     </ClCompile>
-    <ClCompile Include="gen\MnemonicVisitor.cpp">
+    <ClCompile Include="gen\STLanguageParserVisitor.cpp">
       <Filter>ソース ファイル\gen</Filter>
-    </ClCompile>
-    <ClCompile Include="Instruction.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ProgramContext.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,29 +53,43 @@
     <ClInclude Include="common.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="gen\MnemonicBaseListener.h">
-      <Filter>ソース ファイル\gen</Filter>
-    </ClInclude>
-    <ClInclude Include="gen\MnemonicBaseVisitor.h">
-      <Filter>ソース ファイル\gen</Filter>
-    </ClInclude>
-    <ClInclude Include="gen\MnemonicLexer.h">
-      <Filter>ソース ファイル\gen</Filter>
-    </ClInclude>
-    <ClInclude Include="gen\MnemonicListener.h">
-      <Filter>ソース ファイル\gen</Filter>
-    </ClInclude>
-    <ClInclude Include="gen\MnemonicParser.h">
-      <Filter>ソース ファイル\gen</Filter>
-    </ClInclude>
-    <ClInclude Include="gen\MnemonicVisitor.h">
-      <Filter>ソース ファイル\gen</Filter>
-    </ClInclude>
     <ClInclude Include="Instruction.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ProgramContext.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="gen\STLanguageLexer.h">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClInclude>
+    <ClInclude Include="gen\STLanguageParser.h">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClInclude>
+    <ClInclude Include="gen\STLanguageParserBaseListener.h">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClInclude>
+    <ClInclude Include="gen\STLanguageParserBaseVisitor.h">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClInclude>
+    <ClInclude Include="gen\STLanguageParserListener.h">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClInclude>
+    <ClInclude Include="gen\STLanguageParserVisitor.h">
+      <Filter>ソース ファイル\gen</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gen\STLanguageLexer.interp">
+      <Filter>ソース ファイル\gen</Filter>
+    </None>
+    <None Include="gen\STLanguageLexer.tokens">
+      <Filter>ソース ファイル\gen</Filter>
+    </None>
+    <None Include="gen\STLanguageParser.interp">
+      <Filter>ソース ファイル\gen</Filter>
+    </None>
+    <None Include="gen\STLanguageParser.tokens">
+      <Filter>ソース ファイル\gen</Filter>
+    </None>
   </ItemGroup>
 </Project>

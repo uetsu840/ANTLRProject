@@ -1,290 +1,277 @@
 ﻿#include "antlr4-runtime.h"
-#include "gen/MnemonicLexer.h"
-#include "gen/MnemonicParser.h"
-#include "gen/MnemonicBaseVisitor.h"
+#include "gen/STLanguageLexer.h"
+#include "gen/STLanguageParser.h"
+#include "gen/STLanguageParserBaseVisitor.h"
 #include <string>
 #include <math.h>
-#include "Device.h"
-#include "Operand.h"
-#include "Instruction.h"
 
 using namespace std;
-
-struct operandResult {
-	bool success;
-	Operand Operand;
-};
-
-struct instructionResult {
-	bool success;
-	InstructionDecode Instruction;
-};
 
 struct baseResult {
 	bool success;
 };
 
-
-class operandParser 
-{
-public:
-	static bool parseDevice(string str, operandResult& res) {
-		DevType eType;
-		DWORD dwDevNo;
-
-		bool bIsDevice = DeviceAttr::ParseDevice(str.c_str(), eType, dwDevNo);
-		Operand op(eType, dwDevNo);
-
-		res = operandResult{ true, op };
-		return true;
-	}
-
-	static bool parseDecimalValue(string str, SQWORD &sqRes) {
-		char c = str[0];
-		SDWORD lOfs = 0;
-		if ((c == 'K') || (c == '#')) {
-			lOfs = 1;
-		}
-
-		char* endp;
-		SQWORD sqVal = strtoull(str.c_str() + lOfs, &endp, 10);
-		if ('\0' != *endp) {
-			return false;
-		}
-		sqRes = sqVal;
-
-		return true;
-	}
+struct ConvertResult {
+	bool success;
+	string *pScript;
 };
 
-class Visitor : public MnemonicBaseVisitor {
+
+
+
+class Visitor : public STLanguageParserBaseVisitor {
 protected:
-	antlrcpp::Any defaultResult() override { return baseResult{ false }; }
+	antlrcpp::Any defaultResult() override { return ConvertResult{ false, new string("---\0") }; }
 public:
-	antlrcpp::Any visitInput(MnemonicParser::InputContext* ctx) override {
+	antlrcpp::Any visitInput(STLanguageParser::InputContext* ctx) override {
 
-		for (auto mnemonic : ctx->mnemonic()) {
-			printf("---\n");
-			visit(mnemonic);
+		string result;
+		for (auto statement : ctx->statement()) {
+			auto single_stmt = visitStatement(statement).as<ConvertResult>();
+			result += *(single_stmt.pScript);
 		}
 
-		return baseResult{ true };
+		ConvertResult res;
+		res.pScript = new string(result);
+		return res;
 	}
 
-	antlrcpp::Any visitMnemonic(MnemonicParser::MnemonicContext* ctx) override {
-		/**
-		*	デコード
-		*/
-		/* 命令 */
-		auto instruction = ctx->instruction();
-		auto ret_inst = visit(instruction).as<instructionResult>();
-		vector<Operand> vecOperand;
+	antlrcpp::Any visitStatement(STLanguageParser::StatementContext* ctx) override {
+		return visitSingle_statement(ctx->single_statement()).as<ConvertResult>();
+	}
 
-		/* オペランド */
-		for (auto operand : ctx->operand()) {
-			auto ret = visitOperand(operand).as<operandResult>();
-			printf("menimonic: type:%d no%d\n",
-				ret.Operand.getDevType(),
-				ret.Operand.getDevNo());
-			vecOperand.emplace_back(ret.Operand);
+#if 0
+	antlrcpp::Any visitSingle_statement(STLanguageParser::Single_statementContext* ctx) override {
+		return visitChildren(ctx);
+	}
+
+	antlrcpp::Any visitFunction_call_statement(STLanguageParser::Function_call_statementContext* ctx) override {
+		return visitChildren(ctx);
+	}
+
+	antlrcpp::Any visitReturn_statement(STLanguageParser::Return_statementContext* ctx) override {
+		return visitChildren(ctx);
+	}
+#endif
+
+	/**
+	*	IF
+	*/
+	antlrcpp::Any visitIf_statement(STLanguageParser::If_statementContext* ctx) override {
+		printf("visiting... If statement\n");
+		
+		string str;
+		auto res_main = visit(ctx->if_statement_main_clause()).as<ConvertResult>();
+		str += "IF " +  *(res_main.pScript);
+		for (auto clause_elif: ctx->if_statement_elif_clause()) {
+			auto res_elif = visit(clause_elif).as<ConvertResult>();
+			str += "ELSE IF " + *(res_elif.pScript);
+		}
+		if (ctx->if_statement_else_clause()) {
+			auto res_else = visit(ctx->if_statement_else_clause()).as<ConvertResult>();
+			str += "ELSE \n" + *(res_else.pScript);
+		}
+		str += "END IF\n";
+
+		ConvertResult res;
+		res.pScript = new string(str);
+		return res;
+	}
+
+	antlrcpp::Any visitIf_statement_main_clause(STLanguageParser::If_statement_main_clauseContext *ctx) override {
+		printf("visiting.... if(main)\n");
+		auto res = visit(ctx->if_clause()).as<ConvertResult>();
+		return res;
+	}
+
+	antlrcpp::Any visitIf_statement_elif_clause(STLanguageParser::If_statement_elif_clauseContext* ctx) override {
+		printf("visiting.... if(elsif)\n");
+		auto res = visit(ctx->if_clause()).as<ConvertResult>();
+		return res;
+	}
+
+	antlrcpp::Any visitIf_statement_else_clause(STLanguageParser::If_statement_else_clauseContext* ctx) override {
+		string str;
+		for (auto statement : ctx->statement()) {
+			auto stmt = visit(statement).as<ConvertResult>();
+			str += *(stmt.pScript);
 		}
 
-		/**
-		*	実行
-		*/
-		ret_inst.Instruction.ExecuteInstruction(vecOperand);
+		ConvertResult res;
+		res.pScript = new string(str);
 
-		return baseResult{ true };
+		return res;
 	}
 
-	antlrcpp::Any visitInst_normal(
-		MnemonicParser::Inst_normalContext* ctx) override
-	{
-		InstructionDecode inst;
+	antlrcpp::Any visitIf_clause(STLanguageParser::If_clauseContext* ctx) override {
+		printf("visiting.... if clause\n");
 
-		if (!inst.DecodeInstruction(ctx->getText().c_str())) {
-			return instructionResult{ false };
+		string str;
+
+		auto expression = visitExpression(ctx->expression()).as<ConvertResult>();
+		str += *(expression.pScript) + " THEN\n";
+		for (auto statement: ctx->statement()) {
+			auto stmt = visitStatement(statement).as<ConvertResult>();
+			str += *(stmt.pScript);
 		}
+		printf("::::%s\n", str.c_str());
+		
+		ConvertResult res;
+		res.pScript = new string(str);
+		return res;
 
-		return instructionResult{ true, inst };
 	}
 
-	antlrcpp::Any visitInst_with_suffix(
-		MnemonicParser::Inst_with_suffixContext* ctx) override
-	{
-		InstructionDecode inst;
-
-		string dot_suffix = ctx->DOT_SUFFIX()->getText();
-		if (!inst.DecodeInstruction(ctx->IDENTIFIER()->getText(), dot_suffix)) {
-			return instructionResult{ false };
-		}
-
-		return instructionResult{ true, inst };
+#if 0
+	/**
+	*	WHILE
+	*/
+	antlrcpp::Any visitWhile_statement(STLanguageParser::While_statementContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitInst_arith(
-		MnemonicParser::Inst_arithContext* ctx) override
-	{
-		_ASSERT(false);
-		return instructionResult{ true };
+	antlrcpp::Any visitFor_statement(STLanguageParser::For_statementContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitDevice_old_indirect(
-		MnemonicParser::Device_old_indirectContext* ctx) override
-	{
-		_ASSERT(false);
-		return operandResult{ true };
+	antlrcpp::Any visitRepeat_statement(STLanguageParser::Repeat_statementContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitDevice_z(
-		MnemonicParser::Device_zContext* ctx) override
-	{
-		string z_str = ctx->INDEX_DEVICE()->getText();
-		char* endp;
-		DWORD dwDevNo = strtoul(z_str.c_str() + 1, &endp, 10);
-
-		Operand op = Operand(DevType::TYPE_Z, dwDevNo);
-		return operandResult{ true, op };
+	antlrcpp::Any visitCase_statement(STLanguageParser::Case_statementContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitDev_nml_single(
-		MnemonicParser::Dev_nml_singleContext* ctx) override
-	{
-		auto device = ctx->device_content();
-		auto dev_op = visit(device).as<operandResult>();
-		return dev_op;
+	antlrcpp::Any visitToken_case_label(STLanguageParser::Token_case_labelContext* ctx) override {
+		return visitChildren(ctx);
+	}
+#endif
+
+	antlrcpp::Any visitAssign_statement(STLanguageParser::Assign_statementContext* ctx) override {
+		printf("visiting... assign statement\n");
+
+		auto var  = visitVariable(ctx->variable()).as<ConvertResult>();
+		auto expr = visitExpression(ctx->expression()).as<ConvertResult>();
+
+		ConvertResult res;
+		res.pScript = new string(*(var.pScript) + "=" + *(expr.pScript) + "\n");
+		return res;
 	}
 
-	/* インデックス修飾 */
-	antlrcpp::Any visitDev_with_idx(
-		MnemonicParser::Dev_with_idxContext* ctx) override
-	{
-		auto index_val = ctx->index_value();
-		auto index_val_op = visit(index_val).as<operandResult>();
-
-		auto device = ctx->device_content();
-		auto dev_op = visit(device).as<operandResult>();
-
-		if (!dev_op.Operand.AddIndexInfo(index_val_op.Operand)) {
-			return operandResult{ false };
-		}
-
-		return operandResult{ true, dev_op.Operand };
+#if 0
+	antlrcpp::Any visitExpression(STLanguageParser::ExpressionContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitDevice_wbit(
-		MnemonicParser::Device_wbitContext* ctx) override
-	{
-		operandResult ret;
-		operandParser::parseDevice(ctx->getText(), ret);
-		return ret;
+	antlrcpp::Any visitFunction_call(STLanguageParser::Function_callContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitDevice_raw(
-		MnemonicParser::Device_rawContext* ctx) override
-	{
-		operandResult ret;
-		operandParser::parseDevice(ctx->getText(), ret);
-		return ret;
+	antlrcpp::Any visitFunc_in_argument(STLanguageParser::Func_in_argumentContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitIndex_value_immediate(
-		MnemonicParser::Index_value_immediateContext* ctx)
-	{
-		auto index_imm = ctx->index_imm();
-		auto ret = visit(index_imm).as<operandResult>();
-		return ret;
+	antlrcpp::Any visitFunc_out_argument(STLanguageParser::Func_out_argumentContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitIndex_value_device_z(
-		MnemonicParser::Index_value_device_zContext* ctx)
-	{
-		operandResult ret;
-		operandParser::parseDevice(ctx->getText(), ret);
-		return ret;
-	}
-	
-	antlrcpp::Any visitBitpos(
-		MnemonicParser::BitposContext* ctx) override
-	{
-		_ASSERT(false);
-		return operandResult{ true };
+	antlrcpp::Any visitAssign_operator(STLanguageParser::Assign_operatorContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitInt_immediate_decimal(
-		MnemonicParser::Int_immediate_decimalContext* ctx) override
-	{
-		return visit(ctx->decimal_immediate());
-	}
-	
-	antlrcpp::Any visitInt_immediate_hex(
-		MnemonicParser::Int_immediate_hexContext* ctx) override
-	{
-		string hex_num = ctx->IMM_HEX_NUMBER()->getText();
-		char* endp;
-		DWORD dwNum = strtol(hex_num.c_str() + 1, &endp, 16);
-		Operand op = Operand(dwNum);
-
-		return operandResult{ true, op };
+	antlrcpp::Any visitCompare_operator_cmp(STLanguageParser::Compare_operator_cmpContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitDecimal_immediate(
-		MnemonicParser::Decimal_immediateContext* ctx) override
-	{
-		string decimal_str = ctx->getText();
-		SQWORD sqVal;
-		if (!operandParser::parseDecimalValue(decimal_str, sqVal)) {
-			return operandResult{ false };
-		}
-		Operand op = Operand(sqVal);
-		return operandResult{ true, op };
+	antlrcpp::Any visitCompare_operator_eq(STLanguageParser::Compare_operator_eqContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitIndex_imm(
-		MnemonicParser::Index_immContext* context) override
-	{
-		_ASSERT(false);
-
-		return operandResult{ false };
+	antlrcpp::Any visitAssign_operator_out(STLanguageParser::Assign_operator_outContext* ctx) override {
+		return visitChildren(ctx);
 	}
 
+	antlrcpp::Any visitUnary_operator_pre(STLanguageParser::Unary_operator_preContext* ctx) override {
+		return visitChildren(ctx);
+	}
+
+	antlrcpp::Any visitArith_operator_muldiv(STLanguageParser::Arith_operator_muldivContext* ctx) override {
+		return visitChildren(ctx);
+	}
+
+	antlrcpp::Any visitArith_operator_addsub(STLanguageParser::Arith_operator_addsubContext* ctx) override {
+		return visitChildren(ctx);
+	}
+
+	antlrcpp::Any visitValue(STLanguageParser::ValueContext* ctx) override {
+		return visitChildren(ctx);
+	}
+#endif
+
+	antlrcpp::Any visitImmediate(STLanguageParser::ImmediateContext* ctx) override {
+		printf("visiting... Immediate\n");
+
+		ConvertResult result;
+
+		result.pScript = new string(ctx->getText());
+		result.success = true;
+		return result;
+	}
+
+	antlrcpp::Any visitVariable(STLanguageParser::VariableContext* ctx) override {
+		printf("visiting... Variable\n");
+		ConvertResult result;
+		
+		result.pScript = new string(ctx->getText());
+		result.success = true;
+		return result;
+	}
 };
 
 
 
-class MnemonicProgExecuter {
+class STLangToKvScriptConvertExecuter {
 private:
-	int calcExec(ifstream &stream) {
+	int calcExec(ifstream &stream, ofstream &ofs) {
 		try {
 			using namespace antlr4;
 
 			ANTLRInputStream input(stream);		//utf8文字列から読み出す
 
-			MnemonicLexer lexer(&input);
+			STLanguageLexer lexer(&input);
 			CommonTokenStream tokens(&lexer);
-			MnemonicParser parser(&tokens);
-
-			/* 初期化 */
-			Instruction::InitInstruction();
-			Device::InitDevice();
+			STLanguageParser parser(&tokens);
 
 			auto inputTree = parser.input();
 
-			auto ret = Visitor().visit(inputTree).as<baseResult>();
-
+			auto ret = Visitor().visit(inputTree).as<ConvertResult>();
+			ofs << *(ret.pScript);
 		}
 		catch (...) {
 			return -2;
 		}
+		return 0;
 	}
 
 public:
-	MnemonicProgExecuter() {};
+	STLangToKvScriptConvertExecuter() {};
 
-	int ExecFile(const char *filename) {
+	int ExecFile(const string &path) {
 		std::ifstream stream;
-		stream.open(filename);
-		auto ret = calcExec(stream);
+		stream.open(path.c_str());
+
+		size_t extpos = path.rfind('.', path.length());
+		size_t dirsep = path.rfind('/', path.length());
+		string filename = path.substr(dirsep+1, extpos);
+		string dirname = path.substr(0, dirsep);
+		string outfilename = dirname + "/" + filename + "_res.txt";
+		ofstream ofs(outfilename);
+		if (!ofs) {
+			return 0;
+		}
+
+		auto ret = calcExec(stream, ofs);
+
 		return ret;
 	}
 };
@@ -292,19 +279,18 @@ public:
 
 const string strTestFileList[] =
 {
-//	"../test/LD_OUT_R.txt",
-//	"../test/LDB_OUT_R.txt",
 	"../test/debug.txt",
+	"../test/if_nest.txt",
 };
 
 
 int main(int argc, const char* argv[]) 
 {
-	MnemonicProgExecuter calc;
+	STLangToKvScriptConvertExecuter calc;
 
 	for (auto file : strTestFileList) {
-		printf("%s\n", file.c_str());
-		calc.ExecFile(file.c_str());
+		printf("%s\n", file);
+		calc.ExecFile(file);
 	}
 	return 0;
 }

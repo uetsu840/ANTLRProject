@@ -32,11 +32,26 @@ return_statement
 
 /* if */
 if_statement
-    : TOKEN_IF expression TOKEN_IF_THEN
-        statement+
-        (TOKEN_IF_ELIF statement)*
-        (TOKEN_ELSE statement)?
+    : if_statement_main_clause
+        if_statement_elif_clause*
+        if_statement_else_clause?
         TOKEN_IF_END
+    ;
+
+if_statement_main_clause
+    : TOKEN_IF if_clause
+    ;
+
+if_statement_elif_clause
+    : TOKEN_IF_ELIF if_clause
+    ;
+
+if_statement_else_clause
+    : TOKEN_ELSE statement+
+    ;
+
+if_clause
+    : expression TOKEN_IF_THEN (statement)+
     ;
 
 /* while */

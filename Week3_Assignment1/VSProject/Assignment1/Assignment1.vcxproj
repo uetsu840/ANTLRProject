@@ -169,16 +169,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Assignment1.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="gen\MnemonicBaseListener.cpp" />
-    <ClCompile Include="gen\MnemonicBaseVisitor.cpp" />
-    <ClCompile Include="gen\MnemonicLexer.cpp" />
-    <ClCompile Include="gen\MnemonicListener.cpp" />
-    <ClCompile Include="gen\MnemonicParser.cpp" />
-    <ClCompile Include="gen\MnemonicVisitor.cpp" />
-    <ClCompile Include="Instruction.cpp" />
-    <ClCompile Include="ProgramContext.cpp" />
-    <ClCompile Include="Operand.cpp" />
+    <ClCompile Include="gen\STLanguageLexer.cpp" />
+    <ClCompile Include="gen\STLanguageParser.cpp" />
+    <ClCompile Include="gen\STLanguageParserBaseListener.cpp" />
+    <ClCompile Include="gen\STLanguageParserBaseVisitor.cpp" />
+    <ClCompile Include="gen\STLanguageParserListener.cpp" />
+    <ClCompile Include="gen\STLanguageParserVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\..\..\..\..\..\..\..\..\..\Program Files\Antlr\vs2015\lib\vs-2015\x86\Release DLL\antlr4-runtime.dll">
@@ -188,15 +184,21 @@
   <ItemGroup>
     <ClInclude Include="common.h" />
     <ClInclude Include="Device.h" />
-    <ClInclude Include="gen\MnemonicBaseListener.h" />
-    <ClInclude Include="gen\MnemonicBaseVisitor.h" />
-    <ClInclude Include="gen\MnemonicLexer.h" />
-    <ClInclude Include="gen\MnemonicListener.h" />
-    <ClInclude Include="gen\MnemonicParser.h" />
-    <ClInclude Include="gen\MnemonicVisitor.h" />
+    <ClInclude Include="gen\STLanguageLexer.h" />
+    <ClInclude Include="gen\STLanguageParser.h" />
+    <ClInclude Include="gen\STLanguageParserBaseListener.h" />
+    <ClInclude Include="gen\STLanguageParserBaseVisitor.h" />
+    <ClInclude Include="gen\STLanguageParserListener.h" />
+    <ClInclude Include="gen\STLanguageParserVisitor.h" />
     <ClInclude Include="Instruction.h" />
     <ClInclude Include="ProgramContext.h" />
     <ClInclude Include="Operand.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gen\STLanguageLexer.interp" />
+    <None Include="gen\STLanguageLexer.tokens" />
+    <None Include="gen\STLanguageParser.interp" />
+    <None Include="gen\STLanguageParser.tokens" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

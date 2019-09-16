@@ -1,5 +1,7 @@
 IF bCond1 THEN
-	uiHoge := 5;
+	IF bCond3 THEN
+		uiHoge := 5;
+	END_IF;
 	uiFuga := 3;
 	uiFuga := 3;
 	uiFuga := 3;
