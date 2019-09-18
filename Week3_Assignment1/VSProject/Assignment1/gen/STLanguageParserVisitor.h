@@ -45,9 +45,17 @@ public:
 
     virtual antlrcpp::Any visitRepeat_statement(STLanguageParser::Repeat_statementContext *context) = 0;
 
+    virtual antlrcpp::Any visitRepeat_exit_statement(STLanguageParser::Repeat_exit_statementContext *context) = 0;
+
     virtual antlrcpp::Any visitCase_statement(STLanguageParser::Case_statementContext *context) = 0;
 
+    virtual antlrcpp::Any visitCase_one_selection(STLanguageParser::Case_one_selectionContext *context) = 0;
+
     virtual antlrcpp::Any visitToken_case_label(STLanguageParser::Token_case_labelContext *context) = 0;
+
+    virtual antlrcpp::Any visitCase_label_value(STLanguageParser::Case_label_valueContext *context) = 0;
+
+    virtual antlrcpp::Any visitCase_label_range(STLanguageParser::Case_label_rangeContext *context) = 0;
 
     virtual antlrcpp::Any visitAssign_statement(STLanguageParser::Assign_statementContext *context) = 0;
 
@@ -75,7 +83,15 @@ public:
 
     virtual antlrcpp::Any visitValue(STLanguageParser::ValueContext *context) = 0;
 
-    virtual antlrcpp::Any visitImmediate(STLanguageParser::ImmediateContext *context) = 0;
+    virtual antlrcpp::Any visitImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext *context) = 0;
 
     virtual antlrcpp::Any visitVariable(STLanguageParser::VariableContext *context) = 0;
 

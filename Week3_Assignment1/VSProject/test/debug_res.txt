@@ -1,0 +1,11 @@
+IF bCond1 THEN
+	uiHoge=#5
+	uiFuga=#3
+	uiFuga=#3
+	uiFuga=#3
+	uiFuga=#3
+ELSE IF bCond2 THEN
+	uiPiyo=#5
+ELSE
+	uiVal1=#10
+END IF

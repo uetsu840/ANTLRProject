@@ -67,11 +67,27 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitRepeat_exit_statement(STLanguageParser::Repeat_exit_statementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitCase_statement(STLanguageParser::Case_statementContext *ctx) override {
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitCase_one_selection(STLanguageParser::Case_one_selectionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitToken_case_label(STLanguageParser::Token_case_labelContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCase_label_value(STLanguageParser::Case_label_valueContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCase_label_range(STLanguageParser::Case_label_rangeContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -127,7 +143,23 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitImmediate(STLanguageParser::ImmediateContext *ctx) override {
+  virtual antlrcpp::Any visitImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext *ctx) override {
     return visitChildren(ctx);
   }
 

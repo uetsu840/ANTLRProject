@@ -55,11 +55,23 @@ public:
   virtual void enterRepeat_statement(STLanguageParser::Repeat_statementContext * /*ctx*/) override { }
   virtual void exitRepeat_statement(STLanguageParser::Repeat_statementContext * /*ctx*/) override { }
 
+  virtual void enterRepeat_exit_statement(STLanguageParser::Repeat_exit_statementContext * /*ctx*/) override { }
+  virtual void exitRepeat_exit_statement(STLanguageParser::Repeat_exit_statementContext * /*ctx*/) override { }
+
   virtual void enterCase_statement(STLanguageParser::Case_statementContext * /*ctx*/) override { }
   virtual void exitCase_statement(STLanguageParser::Case_statementContext * /*ctx*/) override { }
 
+  virtual void enterCase_one_selection(STLanguageParser::Case_one_selectionContext * /*ctx*/) override { }
+  virtual void exitCase_one_selection(STLanguageParser::Case_one_selectionContext * /*ctx*/) override { }
+
   virtual void enterToken_case_label(STLanguageParser::Token_case_labelContext * /*ctx*/) override { }
   virtual void exitToken_case_label(STLanguageParser::Token_case_labelContext * /*ctx*/) override { }
+
+  virtual void enterCase_label_value(STLanguageParser::Case_label_valueContext * /*ctx*/) override { }
+  virtual void exitCase_label_value(STLanguageParser::Case_label_valueContext * /*ctx*/) override { }
+
+  virtual void enterCase_label_range(STLanguageParser::Case_label_rangeContext * /*ctx*/) override { }
+  virtual void exitCase_label_range(STLanguageParser::Case_label_rangeContext * /*ctx*/) override { }
 
   virtual void enterAssign_statement(STLanguageParser::Assign_statementContext * /*ctx*/) override { }
   virtual void exitAssign_statement(STLanguageParser::Assign_statementContext * /*ctx*/) override { }
@@ -100,8 +112,20 @@ public:
   virtual void enterValue(STLanguageParser::ValueContext * /*ctx*/) override { }
   virtual void exitValue(STLanguageParser::ValueContext * /*ctx*/) override { }
 
-  virtual void enterImmediate(STLanguageParser::ImmediateContext * /*ctx*/) override { }
-  virtual void exitImmediate(STLanguageParser::ImmediateContext * /*ctx*/) override { }
+  virtual void enterImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext * /*ctx*/) override { }
+  virtual void exitImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext * /*ctx*/) override { }
 
   virtual void enterVariable(STLanguageParser::VariableContext * /*ctx*/) override { }
   virtual void exitVariable(STLanguageParser::VariableContext * /*ctx*/) override { }

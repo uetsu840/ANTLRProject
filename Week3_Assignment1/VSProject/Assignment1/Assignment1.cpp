@@ -16,13 +16,9 @@ struct ConvertResult {
 	string *pScript;
 };
 
-
-class Visitor : public STLanguageParserBaseVisitor {
-protected:
-	antlrcpp::Any defaultResult() override { return ConvertResult{ false, new string("") }; };
-
-private:
-	int indent_level;
+class ScriptFormatter {
+	string strOutput = "";
+	int indent_level = 0;
 	void incIndent(void) {
 		indent_level++;
 	}
@@ -31,26 +27,118 @@ private:
 			indent_level--;
 		}
 	}
-	string getIndentStr(void) {
-		string ret;
+	void printIndent(void) {
 		for (int i = 0; i < indent_level; i++) {
-			ret += "\t";
+			strOutput += "\t";
 		}
-		return ret;
 	}
+
+
+
+public:
+	void pushStatement(const string& stmt)
+	{
+		printIndent();
+		strOutput += stmt;
+	}
+
+	/* IF */
+	void pushIfKeyword(void)
+	{
+		printIndent();
+		strOutput += "IF ";
+
+	}
+
+	void pushElsIfKeyword(void)
+	{
+		decIndent();
+		printIndent();
+		strOutput += "ELSE IF ";
+	}
+
+	void pushElseKeyword(void)
+	{
+		decIndent();
+		printIndent();
+		strOutput += "ELSE\n";
+		incIndent();
+	}
+
+	void pushIfClause(const string& expr)
+	{
+		strOutput += expr;
+		strOutput += " THEN\n";
+		incIndent();
+	}
+
+	void closeIfStatement(void)
+	{
+		decIndent();
+		printIndent();
+		strOutput += "END IF\n";
+	}
+
+	/* SELECT CASE */
+	void pushSelectClause(const string &expr)
+	{
+		printIndent();
+		strOutput += ("SELECT CASE " + expr + "\n");
+		incIndent();
+		incIndent();
+	}
+
+	void pushCaseClause(const string &vals)
+	{
+		decIndent();
+		printIndent();
+		strOutput += "CASE ";
+		strOutput += vals;
+		strOutput += ":\n";
+		incIndent();
+	}
+
+	void pushSelectEndClause()
+	{
+		decIndent();
+		decIndent();
+		printIndent();
+		strOutput += "END SELECT\n";
+	}
+
+	string getOutput()
+	{
+		return strOutput;
+	}
+};
+
+std::string replaceString(std::string str,
+	const std::string& replace,
+	const std::string& with) {
+	std::size_t pos = str.find(replace);
+	if (pos != std::string::npos)
+		str.replace(pos, replace.length(), with);
+	return str;
+}
+
+
+class Visitor : public STLanguageParserBaseVisitor {
+protected:
+	antlrcpp::Any defaultResult() override { return ConvertResult{ false, new string("") }; };
+
+private:
+	ScriptFormatter scr;
 
 public:
 	antlrcpp::Any visitInput(STLanguageParser::InputContext* ctx) override {
-		indent_level = 0;
 
-		string result;
 		for (auto statement : ctx->statement()) {
 			auto single_stmt = visitStatement(statement).as<ConvertResult>();
-			result += *(single_stmt.pScript);
 		}
 
 		ConvertResult res;
-		res.pScript = new string(result);
+		res.pScript = new string(scr.getOutput());
+		res.success = true;
 		return res;
 	}
 
@@ -77,25 +165,23 @@ public:
 	*/
 	antlrcpp::Any visitIf_statement(STLanguageParser::If_statementContext* ctx) override {
 
-		string str;
+		/* IF */
+		scr.pushIfKeyword();
 		auto res_main = visit(ctx->if_statement_main_clause()).as<ConvertResult>();
-		str += getIndentStr() + "IF " +  *(res_main.pScript);
-		for (auto clause_elif: ctx->if_statement_elif_clause()) {
-			auto res_elif = visit(clause_elif).as<ConvertResult>();
-			str += getIndentStr() + "ELSE IF " + *(res_elif.pScript);
-		}
-		if (ctx->if_statement_else_clause()) {
-			auto res_else = visit(ctx->if_statement_else_clause()).as<ConvertResult>();
-			str += getIndentStr() + "ELSE \n";
-			incIndent();
-			str += getIndentStr() + *(res_else.pScript);
-			decIndent();
-		}
-		str += getIndentStr() +  "END IF\n";
 
-		ConvertResult res;
-		res.pScript = new string(str);
-		return res;
+		/* ELSIF */
+		for (auto clause_elif: ctx->if_statement_elif_clause()) {
+			scr.pushElsIfKeyword();
+			auto res_elif = visit(clause_elif).as<ConvertResult>();
+		}
+		/* ELSE */
+		if (ctx->if_statement_else_clause()) {
+			scr.pushElseKeyword();
+			auto res_else = visit(ctx->if_statement_else_clause()).as<ConvertResult>();
+		}
+		scr.closeIfStatement();
+
+		return ConvertResult{ true };
 	}
 
 	antlrcpp::Any visitIf_statement_main_clause(STLanguageParser::If_statement_main_clauseContext *ctx) override {
@@ -112,31 +198,20 @@ public:
 		string str;
 		for (auto statement : ctx->statement()) {
 			auto stmt = visit(statement).as<ConvertResult>();
-			str += *(stmt.pScript);
 		}
-
-		ConvertResult res;
-		res.pScript = new string(str);
-
-		return res;
+		return ConvertResult{ true };
 	}
 
 	antlrcpp::Any visitIf_clause(STLanguageParser::If_clauseContext* ctx) override {
 		string str;
 
 		auto expression = visitExpression(ctx->expression()).as<ConvertResult>();
-		str += *(expression.pScript) + " THEN\n";
-		incIndent();
+		scr.pushIfClause(*(expression.pScript));
+		
 		for (auto statement: ctx->statement()) {
 			auto stmt = visitStatement(statement).as<ConvertResult>();
-			str += *(stmt.pScript);
 		}
-		decIndent();
-		
-		ConvertResult res;
-		res.pScript = new string(str);
-		return res;
-
+		return ConvertResult{ true };
 	}
 
 #if 0
@@ -155,24 +230,107 @@ public:
 		return visitChildren(ctx);
 	}
 
-	antlrcpp::Any visitCase_statement(STLanguageParser::Case_statementContext* ctx) override {
-		return visitChildren(ctx);
-	}
-
-	antlrcpp::Any visitToken_case_label(STLanguageParser::Token_case_labelContext* ctx) override {
+	antlrcpp::Any visitRepeat_exit_statement(STLanguageParser::Repeat_exit_statementContext* ctx) override {
 		return visitChildren(ctx);
 	}
 #endif
 
+
+	/**
+	*	CASE
+	*/
+	antlrcpp::Any visitCase_statement(STLanguageParser::Case_statementContext* ctx) override {
+
+		auto var = visit(ctx->variable()).as<ConvertResult>();
+		scr.pushSelectClause(*(var.pScript));
+
+		for (auto case_one : ctx->case_one_selection()) {
+			visit(case_one);
+		}
+		if (ctx->TOKEN_ELSE()) {
+			for (auto stmt : ctx->statement()) {
+				visit(stmt);
+			}
+		}
+		scr.pushSelectEndClause();
+		return ConvertResult{ true };
+	}
+
+	antlrcpp::Any visitCase_one_selection(STLanguageParser::Case_one_selectionContext* ctx) override {
+		string labelStr;
+		bool bFirst = true;
+		for (auto case_label : ctx->token_case_label()) {
+			if (!bFirst) {
+				labelStr += ",";
+			}
+			bFirst = false;
+			auto label = visit(case_label).as<ConvertResult>();
+			labelStr += *(label.pScript);
+		}
+		scr.pushCaseClause(labelStr);
+
+		for (auto stmt : ctx->statement()) {
+			visit(stmt);
+		}
+		return ConvertResult{ true };
+	}
+
+	antlrcpp::Any visitToken_case_label(STLanguageParser::Token_case_labelContext* ctx) override {
+		string rangeStr;
+		bool bFirst = true;
+		for (auto range : ctx->case_label_range()) {
+			auto sel = visit(range).as<ConvertResult>();
+			if (!bFirst) {
+				rangeStr += ",";
+			}
+			bFirst = false;
+			rangeStr += *(sel.pScript);
+		}
+		for (auto val : ctx->case_label_value()) {
+			auto sel = visit(val).as<ConvertResult>();
+			if (!bFirst) {
+				rangeStr += ",";
+			}
+			bFirst = false;
+			rangeStr += *(sel.pScript);
+		}
+		ConvertResult res;
+		res.pScript = new string(rangeStr);
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitCase_label_range(STLanguageParser::Case_label_rangeContext* ctx) override {
+		auto valueL = visit(ctx->value()[0]).as<ConvertResult>();
+		auto valueR = visit(ctx->value()[1]).as<ConvertResult>();
+
+
+		ConvertResult res;
+		res.pScript = new string(*(valueL.pScript) + " TO " + *(valueR.pScript));
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitCase_label_value(STLanguageParser::Case_label_valueContext* ctx) override {
+		auto value = visit(ctx->value()).as<ConvertResult>();
+		ConvertResult res;
+		res.pScript = new string(*(value.pScript));
+		res.success = true;
+		return res;
+	}
+
+
+	/**
+	*	:=
+	*/
 	antlrcpp::Any visitAssign_statement(STLanguageParser::Assign_statementContext* ctx) override {
 		printf("visiting... assign statement\n");
 
 		auto var  = visitVariable(ctx->variable()).as<ConvertResult>();
 		auto expr = visitExpression(ctx->expression()).as<ConvertResult>();
 
-		ConvertResult res;
-		res.pScript = new string(getIndentStr() + *(var.pScript) + "=" + *(expr.pScript) + "\n");
-		return res;
+		scr.pushStatement(*(var.pScript) + "=" + *(expr.pScript) + "\n");
+		return ConvertResult{ true };
 	}
 
 #if 0
@@ -225,24 +383,71 @@ public:
 	}
 #endif
 
-	antlrcpp::Any visitImmediate(STLanguageParser::ImmediateContext* ctx) override {
-		printf("visiting... Immediate\n");
-
-		ConvertResult result;
-
-		result.pScript = new string(ctx->getText());
-		result.success = true;
-		return result;
-	}
 
 	antlrcpp::Any visitVariable(STLanguageParser::VariableContext* ctx) override {
-		printf("visiting... Variable\n");
-		ConvertResult result;
-		
-		result.pScript = new string(ctx->getText());
-		result.success = true;
-		return result;
+		printf("variable\n");
+		ConvertResult res;
+		res.pScript = new string(ctx->getText());
+		res.success = true;
+		return res;
 	}
+
+	antlrcpp::Any visitImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext* ctx) override {
+		ConvertResult res;
+		res.pScript = new string("#" + ctx->getText());
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext* ctx) override {
+		ConvertResult res;
+		string str = ctx->getText();
+		res.pScript = new string(replaceString(str, "16#", "$"));
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext* ctx) override {
+		string str = ctx->getText();
+		str = replaceString(str, "8#", "");
+
+		char* endp;
+		int lVal = strtoull(str.c_str(), &endp, 8);
+		if ('\0' != *endp) {
+			return false;
+		}
+		
+		ConvertResult res;
+		res.pScript = new string("#" + to_string(lVal));
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext* ctx) override {
+		string str = ctx->getText();
+		str = replaceString(str, "2#", "");
+		str = replaceString(str, "_", "");
+
+		char* endp;
+		int lVal = strtoull(str.c_str(), &endp, 2);
+		if ('\0' != *endp) {
+			return false;
+		}
+
+		ConvertResult res;
+		res.pScript = new string("#" + to_string(lVal));
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext* ctx) override {
+
+		ConvertResult res;
+		res.pScript = new string(ctx->getText());
+		res.success = true;
+		return res;
+	}
+
 };
 
 
@@ -279,7 +484,7 @@ public:
 
 		size_t extpos = path.rfind('.', path.length());
 		size_t dirsep = path.rfind('/', path.length());
-		string filename = path.substr(dirsep+1, extpos);
+		string filename = path.substr(dirsep+1, extpos-dirsep-1);
 		string dirname = path.substr(0, dirsep);
 		string outfilename = dirname + "/" + filename + "_res.txt";
 		ofstream ofs(outfilename);
@@ -296,6 +501,8 @@ public:
 
 const string strTestFileList[] =
 {
+	"../test/test_statement_input.txt",
+	"../test/expr_value.txt",
 	"../test/debug.txt",
 	"../test/if_nest.txt",
 };

@@ -19,13 +19,13 @@ public:
     TOKEN_TO = 17, TOKEN_WHILE_END = 18, TOKEN_IF = 19, TOKEN_IF_THEN = 20, 
     TOKEN_IF_ELIF = 21, TOKEN_ELSE = 22, TOKEN_IF_END = 23, TOKEN_SELECT = 24, 
     TOKEN_SELECT_END = 25, TOKEN_REPEAT = 26, TOKEN_UNTIL = 27, TOKEN_REPEAT_END = 28, 
-    TOKEN_CASE = 29, TOKEN_OF = 30, TOKEN_CASE_END = 31, TOKEN_NOT = 32, 
-    TOKEN_OPEN_BRACE = 33, TOKEN_CLOSE_BRACE = 34, TOKEN_HEX_NUMBER = 35, 
-    TOKEN_DEC_NUMBER = 36, TOKEN_OCT_NUMBER = 37, TOKEN_BIN_NUMBER = 38, 
-    TOKEN_CASE_RANGE = 39, TOKEN_PLUS = 40, TOKEN_MINUS = 41, TOKEN_MUL = 42, 
-    TOKEN_DIV = 43, TOKEN_ARG_SEP = 44, TOKEN_CASE_VAL_SEP = 45, TOKEN_CASE_LBL_SEP = 46, 
-    TOKEN_AND = 47, TOKEN_XOR = 48, TOKEN_OR = 49, STATEMENT_SEPARATOR = 50, 
-    IDENTIFIER = 51, NL = 52, NOT_NL = 53, END_COMMENT = 54, COMMENT = 55
+    TOKEN_REPEAT_EXIT = 29, TOKEN_CASE = 30, TOKEN_OF = 31, TOKEN_CASE_END = 32, 
+    TOKEN_NOT = 33, TOKEN_OPEN_BRACE = 34, TOKEN_CLOSE_BRACE = 35, TOKEN_HEX_NUMBER = 36, 
+    TOKEN_DEC_NUMBER = 37, TOKEN_OCT_NUMBER = 38, TOKEN_BIN_NUMBER = 39, 
+    TOKEN_FP_NUMBER = 40, TOKEN_CASE_RANGE = 41, TOKEN_PLUS = 42, TOKEN_MINUS = 43, 
+    TOKEN_MUL = 44, TOKEN_DIV = 45, TOKEN_ARG_LBL_SEP = 46, TOKEN_CASE_LBL_SEP = 47, 
+    TOKEN_AND = 48, TOKEN_XOR = 49, TOKEN_OR = 50, STATEMENT_SEPARATOR = 51, 
+    IDENTIFIER = 52, NL = 53, NOT_NL = 54, END_COMMENT = 55, COMMENT = 56
   };
 
   enum {
@@ -33,12 +33,14 @@ public:
     RuleReturn_statement = 4, RuleIf_statement = 5, RuleIf_statement_main_clause = 6, 
     RuleIf_statement_elif_clause = 7, RuleIf_statement_else_clause = 8, 
     RuleIf_clause = 9, RuleWhile_statement = 10, RuleFor_statement = 11, 
-    RuleRepeat_statement = 12, RuleCase_statement = 13, RuleToken_case_label = 14, 
-    RuleAssign_statement = 15, RuleExpression = 16, RuleFunction_call = 17, 
-    RuleFunc_in_argument = 18, RuleFunc_out_argument = 19, RuleAssign_operator = 20, 
-    RuleCompare_operator_cmp = 21, RuleCompare_operator_eq = 22, RuleAssign_operator_out = 23, 
-    RuleUnary_operator_pre = 24, RuleArith_operator_muldiv = 25, RuleArith_operator_addsub = 26, 
-    RuleValue = 27, RuleImmediate = 28, RuleVariable = 29
+    RuleRepeat_statement = 12, RuleRepeat_exit_statement = 13, RuleCase_statement = 14, 
+    RuleCase_one_selection = 15, RuleToken_case_label = 16, RuleCase_label_value = 17, 
+    RuleCase_label_range = 18, RuleAssign_statement = 19, RuleExpression = 20, 
+    RuleFunction_call = 21, RuleFunc_in_argument = 22, RuleFunc_out_argument = 23, 
+    RuleAssign_operator = 24, RuleCompare_operator_cmp = 25, RuleCompare_operator_eq = 26, 
+    RuleAssign_operator_out = 27, RuleUnary_operator_pre = 28, RuleArith_operator_muldiv = 29, 
+    RuleArith_operator_addsub = 30, RuleValue = 31, RuleImmediate = 32, 
+    RuleVariable = 33
   };
 
   STLanguageParser(antlr4::TokenStream *input);
@@ -64,8 +66,12 @@ public:
   class While_statementContext;
   class For_statementContext;
   class Repeat_statementContext;
+  class Repeat_exit_statementContext;
   class Case_statementContext;
+  class Case_one_selectionContext;
   class Token_case_labelContext;
+  class Case_label_valueContext;
+  class Case_label_rangeContext;
   class Assign_statementContext;
   class ExpressionContext;
   class Function_callContext;
@@ -124,6 +130,7 @@ public:
     While_statementContext *while_statement();
     For_statementContext *for_statement();
     Repeat_statementContext *repeat_statement();
+    Repeat_exit_statementContext *repeat_exit_statement();
     Case_statementContext *case_statement();
     Assign_statementContext *assign_statement();
     Function_call_statementContext *function_call_statement();
@@ -315,6 +322,21 @@ public:
 
   Repeat_statementContext* repeat_statement();
 
+  class  Repeat_exit_statementContext : public antlr4::ParserRuleContext {
+  public:
+    Repeat_exit_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *TOKEN_REPEAT_EXIT();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Repeat_exit_statementContext* repeat_exit_statement();
+
   class  Case_statementContext : public antlr4::ParserRuleContext {
   public:
     Case_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -323,8 +345,9 @@ public:
     VariableContext *variable();
     antlr4::tree::TerminalNode *TOKEN_OF();
     antlr4::tree::TerminalNode *TOKEN_CASE_END();
-    std::vector<Token_case_labelContext *> token_case_label();
-    Token_case_labelContext* token_case_label(size_t i);
+    std::vector<Case_one_selectionContext *> case_one_selection();
+    Case_one_selectionContext* case_one_selection(size_t i);
+    antlr4::tree::TerminalNode *TOKEN_ELSE();
     std::vector<StatementContext *> statement();
     StatementContext* statement(size_t i);
 
@@ -337,17 +360,35 @@ public:
 
   Case_statementContext* case_statement();
 
+  class  Case_one_selectionContext : public antlr4::ParserRuleContext {
+  public:
+    Case_one_selectionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<Token_case_labelContext *> token_case_label();
+    Token_case_labelContext* token_case_label(size_t i);
+    std::vector<StatementContext *> statement();
+    StatementContext* statement(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Case_one_selectionContext* case_one_selection();
+
   class  Token_case_labelContext : public antlr4::ParserRuleContext {
   public:
     Token_case_labelContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<ValueContext *> value();
-    ValueContext* value(size_t i);
     antlr4::tree::TerminalNode *TOKEN_CASE_LBL_SEP();
-    std::vector<antlr4::tree::TerminalNode *> TOKEN_CASE_VAL_SEP();
-    antlr4::tree::TerminalNode* TOKEN_CASE_VAL_SEP(size_t i);
-    antlr4::tree::TerminalNode *TOKEN_CASE_RANGE();
-    antlr4::tree::TerminalNode *TOKEN_ELSE();
+    std::vector<Case_label_valueContext *> case_label_value();
+    Case_label_valueContext* case_label_value(size_t i);
+    std::vector<Case_label_rangeContext *> case_label_range();
+    Case_label_rangeContext* case_label_range(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> TOKEN_ARG_LBL_SEP();
+    antlr4::tree::TerminalNode* TOKEN_ARG_LBL_SEP(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -357,6 +398,38 @@ public:
   };
 
   Token_case_labelContext* token_case_label();
+
+  class  Case_label_valueContext : public antlr4::ParserRuleContext {
+  public:
+    Case_label_valueContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    ValueContext *value();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Case_label_valueContext* case_label_value();
+
+  class  Case_label_rangeContext : public antlr4::ParserRuleContext {
+  public:
+    Case_label_rangeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<ValueContext *> value();
+    ValueContext* value(size_t i);
+    antlr4::tree::TerminalNode *TOKEN_CASE_RANGE();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Case_label_rangeContext* case_label_range();
 
   class  Assign_statementContext : public antlr4::ParserRuleContext {
   public:
@@ -411,8 +484,8 @@ public:
     antlr4::tree::TerminalNode *TOKEN_CLOSE_BRACE();
     std::vector<ExpressionContext *> expression();
     ExpressionContext* expression(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> TOKEN_ARG_SEP();
-    antlr4::tree::TerminalNode* TOKEN_ARG_SEP(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> TOKEN_ARG_LBL_SEP();
+    antlr4::tree::TerminalNode* TOKEN_ARG_LBL_SEP(size_t i);
     std::vector<Func_in_argumentContext *> func_in_argument();
     Func_in_argumentContext* func_in_argument(size_t i);
     std::vector<Func_out_argumentContext *> func_out_argument();
@@ -595,18 +668,69 @@ public:
   class  ImmediateContext : public antlr4::ParserRuleContext {
   public:
     ImmediateContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *TOKEN_DEC_NUMBER();
-    antlr4::tree::TerminalNode *TOKEN_MINUS();
-    antlr4::tree::TerminalNode *TOKEN_HEX_NUMBER();
-    antlr4::tree::TerminalNode *TOKEN_OCT_NUMBER();
-    antlr4::tree::TerminalNode *TOKEN_BIN_NUMBER();
+   
+    ImmediateContext() = default;
+    void copyFrom(ImmediateContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Immediate_oct_numberContext : public ImmediateContext {
+  public:
+    Immediate_oct_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_OCT_NUMBER();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Immediate_dec_numberContext : public ImmediateContext {
+  public:
+    Immediate_dec_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_DEC_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_hex_numberContext : public ImmediateContext {
+  public:
+    Immediate_hex_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_HEX_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_bin_NumberContext : public ImmediateContext {
+  public:
+    Immediate_bin_NumberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_BIN_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_fp_numberContext : public ImmediateContext {
+  public:
+    Immediate_fp_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_FP_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   ImmediateContext* immediate();

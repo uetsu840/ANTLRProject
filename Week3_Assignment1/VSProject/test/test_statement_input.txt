@@ -1,0 +1,19 @@
+CASE A OF
+  B: C:=D;
+  ELSE E:=F;
+END_CASE;
+CASE A OF
+  B:
+  C:D:=E;
+END_CASE;
+CASE A OF
+  B,C:
+  D..E:
+  F,G,H..I:J:=K;
+END_CASE;
+CASE A OF B:C:=D;ELSE F();END_CASE;
+
+CASE A OF
+  B: C:=E;
+  ELSE RETURN;
+END_CASE;

@@ -53,11 +53,23 @@ public:
   virtual void enterRepeat_statement(STLanguageParser::Repeat_statementContext *ctx) = 0;
   virtual void exitRepeat_statement(STLanguageParser::Repeat_statementContext *ctx) = 0;
 
+  virtual void enterRepeat_exit_statement(STLanguageParser::Repeat_exit_statementContext *ctx) = 0;
+  virtual void exitRepeat_exit_statement(STLanguageParser::Repeat_exit_statementContext *ctx) = 0;
+
   virtual void enterCase_statement(STLanguageParser::Case_statementContext *ctx) = 0;
   virtual void exitCase_statement(STLanguageParser::Case_statementContext *ctx) = 0;
 
+  virtual void enterCase_one_selection(STLanguageParser::Case_one_selectionContext *ctx) = 0;
+  virtual void exitCase_one_selection(STLanguageParser::Case_one_selectionContext *ctx) = 0;
+
   virtual void enterToken_case_label(STLanguageParser::Token_case_labelContext *ctx) = 0;
   virtual void exitToken_case_label(STLanguageParser::Token_case_labelContext *ctx) = 0;
+
+  virtual void enterCase_label_value(STLanguageParser::Case_label_valueContext *ctx) = 0;
+  virtual void exitCase_label_value(STLanguageParser::Case_label_valueContext *ctx) = 0;
+
+  virtual void enterCase_label_range(STLanguageParser::Case_label_rangeContext *ctx) = 0;
+  virtual void exitCase_label_range(STLanguageParser::Case_label_rangeContext *ctx) = 0;
 
   virtual void enterAssign_statement(STLanguageParser::Assign_statementContext *ctx) = 0;
   virtual void exitAssign_statement(STLanguageParser::Assign_statementContext *ctx) = 0;
@@ -98,8 +110,20 @@ public:
   virtual void enterValue(STLanguageParser::ValueContext *ctx) = 0;
   virtual void exitValue(STLanguageParser::ValueContext *ctx) = 0;
 
-  virtual void enterImmediate(STLanguageParser::ImmediateContext *ctx) = 0;
-  virtual void exitImmediate(STLanguageParser::ImmediateContext *ctx) = 0;
+  virtual void enterImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext *ctx) = 0;
+  virtual void exitImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext *ctx) = 0;
+
+  virtual void enterImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext *ctx) = 0;
+  virtual void exitImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext *ctx) = 0;
+
+  virtual void enterImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext *ctx) = 0;
+  virtual void exitImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext *ctx) = 0;
+
+  virtual void enterImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext *ctx) = 0;
+  virtual void exitImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext *ctx) = 0;
+
+  virtual void enterImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext *ctx) = 0;
+  virtual void exitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext *ctx) = 0;
 
   virtual void enterVariable(STLanguageParser::VariableContext *ctx) = 0;
   virtual void exitVariable(STLanguageParser::VariableContext *ctx) = 0;
