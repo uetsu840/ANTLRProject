@@ -13,7 +13,11 @@ struct baseResult {
 
 struct ConvertResult {
 	bool success;
-	string *pScript;
+	string strScript;
+
+	ConvertResult() { success = false; strScript = ""; };
+	ConvertResult(bool s, string scr) : success(s), strScript(scr) {};
+	ConvertResult(const ConvertResult& obj) noexcept { strScript = obj.strScript; };
 };
 
 class ScriptFormatter {
@@ -133,7 +137,7 @@ std::string replaceString(std::string str,
 
 class Visitor : public STLanguageParserBaseVisitor {
 protected:
-	antlrcpp::Any defaultResult() override { return ConvertResult{ false, new string("") }; };
+	antlrcpp::Any defaultResult() override { return ConvertResult{ false, "" }; };
 
 private:
 	ScriptFormatter scr;
@@ -146,7 +150,7 @@ public:
 		}
 
 		ConvertResult res;
-		res.pScript = new string(scr.getOutput());
+		res.strScript = scr.getOutput();
 		res.success = true;
 		return res;
 	}
@@ -190,7 +194,7 @@ public:
 		}
 		scr.closeIfStatement();
 
-		return ConvertResult{ true };
+		return ConvertResult{};
 	}
 
 	antlrcpp::Any visitIf_statement_main_clause(STLanguageParser::If_statement_main_clauseContext *ctx) override {
@@ -208,19 +212,19 @@ public:
 		for (auto statement : ctx->statement()) {
 			auto stmt = visit(statement).as<ConvertResult>();
 		}
-		return ConvertResult{ true };
+		return ConvertResult{};
 	}
 
 	antlrcpp::Any visitIf_clause(STLanguageParser::If_clauseContext* ctx) override {
 		string str;
 
 		auto expression = visitExpression(ctx->expression()).as<ConvertResult>();
-		scr.pushIfClause(*(expression.pScript));
+		scr.pushIfClause(expression.strScript);
 		
 		for (auto statement: ctx->statement()) {
 			auto stmt = visitStatement(statement).as<ConvertResult>();
 		}
-		return ConvertResult{ true };
+		return ConvertResult{};
 	}
 
 #if 0
@@ -251,7 +255,7 @@ public:
 	antlrcpp::Any visitCase_statement(STLanguageParser::Case_statementContext* ctx) override {
 
 		auto var = visit(ctx->variable()).as<ConvertResult>();
-		scr.pushSelectClause(*(var.pScript));
+		scr.pushSelectClause(var.strScript);
 
 		for (auto case_one : ctx->case_one_selection()) {
 			visit(case_one);
@@ -263,7 +267,7 @@ public:
 			}
 		}
 		scr.pushSelectEndClause();
-		return ConvertResult{ true };
+		return ConvertResult{};
 	}
 	
 	antlrcpp::Any visitCase_one_selection(STLanguageParser::Case_one_selectionContext* ctx) override {
@@ -271,7 +275,7 @@ public:
 		for (auto stmt : ctx->statement()) {
 			visit(stmt);
 		}
-		return ConvertResult{ true };
+		return ConvertResult{};
 	}
 
 	antlrcpp::Any visitToken_case_label(STLanguageParser::Token_case_labelContext* ctx) override {
@@ -283,7 +287,7 @@ public:
 				rangeStr += ",";
 			}
 			bFirst = false;
-			rangeStr += *(sel.pScript);
+			rangeStr += sel.strScript;
 		}
 		for (auto val : ctx->case_label_value()) {
 			auto sel = visit(val).as<ConvertResult>();
@@ -291,29 +295,22 @@ public:
 				rangeStr += ",";
 			}
 			bFirst = false;
-			rangeStr += *(sel.pScript);
+			rangeStr += sel.strScript;
 		}
 		scr.pushCaseClause(rangeStr);
-		return ConvertResult{ true };
+		return ConvertResult{};
 	}
 
 	antlrcpp::Any visitCase_label_range(STLanguageParser::Case_label_rangeContext* ctx) override {
 		auto valueL = visit(ctx->value()[0]).as<ConvertResult>();
 		auto valueR = visit(ctx->value()[1]).as<ConvertResult>();
 
-
-		ConvertResult res;
-		res.pScript = new string(*(valueL.pScript) + " TO " + *(valueR.pScript));
-		res.success = true;
-		return res;
+		return ConvertResult{true, valueL.strScript + " TO " + valueR.strScript };
 	}
 
 	antlrcpp::Any visitCase_label_value(STLanguageParser::Case_label_valueContext* ctx) override {
 		auto value = visit(ctx->value()).as<ConvertResult>();
-		ConvertResult res;
-		res.pScript = new string(*(value.pScript));
-		res.success = true;
-		return res;
+		return ConvertResult{ true, value.strScript };
 	}
 
 
@@ -326,8 +323,8 @@ public:
 		auto var  = visitVariable(ctx->variable()).as<ConvertResult>();
 		auto expr = visitExpression(ctx->expression()).as<ConvertResult>();
 
-		scr.pushStatement(*(var.pScript) + "=" + *(expr.pScript) + "\n");
-		return ConvertResult{ true };
+		scr.pushStatement(var.strScript + "=" + expr.strScript + "\n");
+		return ConvertResult{};
 	}
 
 #if 0
@@ -383,25 +380,15 @@ public:
 
 	antlrcpp::Any visitVariable(STLanguageParser::VariableContext* ctx) override {
 		printf("variable\n");
-		ConvertResult res;
-		res.pScript = new string(ctx->getText());
-		res.success = true;
-		return res;
+		return ConvertResult{ true,  ctx->getText() };
 	}
 
 	antlrcpp::Any visitImmediate_dec_number(STLanguageParser::Immediate_dec_numberContext* ctx) override {
-		ConvertResult res;
-		res.pScript = new string("#" + ctx->getText());
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "#" + ctx->getText() };
 	}
 
 	antlrcpp::Any visitImmediate_hex_number(STLanguageParser::Immediate_hex_numberContext* ctx) override {
-		ConvertResult res;
-		string str = ctx->getText();
-		res.pScript = new string(replaceString(str, "16#", "$"));
-		res.success = true;
-		return res;
+		return ConvertResult{ true, replaceString(ctx->getText(), "16#", "$") };
 	}
 
 	antlrcpp::Any visitImmediate_oct_number(STLanguageParser::Immediate_oct_numberContext* ctx) override {
@@ -414,10 +401,7 @@ public:
 			return false;
 		}
 		
-		ConvertResult res;
-		res.pScript = new string("#" + to_string(lVal));
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "#" + to_string(lVal) };
 	}
 
 	antlrcpp::Any visitImmediate_bin_Number(STLanguageParser::Immediate_bin_NumberContext* ctx) override {
@@ -431,60 +415,36 @@ public:
 			return false;
 		}
 
-		ConvertResult res;
-		res.pScript = new string("#" + to_string(lVal));
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "#" + to_string(lVal) };
 	}
 
 	antlrcpp::Any visitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext* ctx) override {
 
-		ConvertResult res;
-		res.pScript = new string(ctx->getText());
-		res.success = true;
-		return res;
+		return ConvertResult{ true, ctx->getText() };
 	}
 
 	antlrcpp::Any visitImmediate_lreal_fp_number(STLanguageParser::Immediate_lreal_fp_numberContext* ctx) override {
-		ConvertResult res;
-		res.pScript = new string("TODF(" + ctx->TOKEN_FP_NUMBER()->toString() + ")");
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "TODF(" + ctx->TOKEN_FP_NUMBER()->toString() + ")" };
 	}
 
 	antlrcpp::Any visitImmediate_real_fp_number(STLanguageParser::Immediate_real_fp_numberContext* ctx) override {
-		ConvertResult res;
-		res.pScript = new string("TOF(" + ctx->TOKEN_FP_NUMBER()->toString() + ")");
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "TOF(" + ctx->TOKEN_FP_NUMBER()->toString() + ")" };
 	}
 
 	antlrcpp::Any visitImmediate_int_dec_number(STLanguageParser::Immediate_int_dec_numberContext* ctx) override {
-		ConvertResult res;
-		res.pScript = new string("TOS(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "TOS(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")" };
 	}
 
 	antlrcpp::Any visitImmediate_uint_dec_number(STLanguageParser::Immediate_uint_dec_numberContext* ctx) override {
-		ConvertResult res;
-		res.pScript = new string("TOU(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "TOU(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")" };
 	}
 
 	antlrcpp::Any visitImmediate_dint_dec_number(STLanguageParser::Immediate_dint_dec_numberContext* ctx) override {
-		ConvertResult res;
-		res.pScript = new string("TOL(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "TOL(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")" };
 	}
 
 	antlrcpp::Any visitImmediate_udint_dec_number(STLanguageParser::Immediate_udint_dec_numberContext* ctx) override {
-		ConvertResult res;
-		res.pScript = new string("TOD(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
-		res.success = true;
-		return res;
+		return ConvertResult{ true, "TOD(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")" };
 	}
 };
 
@@ -505,7 +465,7 @@ private:
 			auto inputTree = parser.input();
 
 			auto ret = Visitor().visit(inputTree).as<ConvertResult>();
-			ofs << *(ret.pScript);
+			ofs << ret.strScript;
 		}
 		catch (...) {
 			return -2;
