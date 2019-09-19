@@ -98,6 +98,15 @@ public:
 		incIndent();
 	}
 
+	void pushSelectElseClause()
+	{
+		decIndent();
+		printIndent();
+		strOutput += "ELSE\n";
+		incIndent();
+	}
+
+
 	void pushSelectEndClause()
 	{
 		decIndent();
@@ -248,6 +257,7 @@ public:
 			visit(case_one);
 		}
 		if (ctx->TOKEN_ELSE()) {
+			scr.pushSelectElseClause();
 			for (auto stmt : ctx->statement()) {
 				visit(stmt);
 			}
@@ -255,20 +265,9 @@ public:
 		scr.pushSelectEndClause();
 		return ConvertResult{ true };
 	}
-
+	
 	antlrcpp::Any visitCase_one_selection(STLanguageParser::Case_one_selectionContext* ctx) override {
-		string labelStr;
-		bool bFirst = true;
-		for (auto case_label : ctx->token_case_label()) {
-			if (!bFirst) {
-				labelStr += ",";
-			}
-			bFirst = false;
-			auto label = visit(case_label).as<ConvertResult>();
-			labelStr += *(label.pScript);
-		}
-		scr.pushCaseClause(labelStr);
-
+		visit(ctx->token_case_label());
 		for (auto stmt : ctx->statement()) {
 			visit(stmt);
 		}
@@ -294,10 +293,8 @@ public:
 			bFirst = false;
 			rangeStr += *(sel.pScript);
 		}
-		ConvertResult res;
-		res.pScript = new string(rangeStr);
-		res.success = true;
-		return res;
+		scr.pushCaseClause(rangeStr);
+		return ConvertResult{ true };
 	}
 
 	antlrcpp::Any visitCase_label_range(STLanguageParser::Case_label_rangeContext* ctx) override {
@@ -448,6 +445,47 @@ public:
 		return res;
 	}
 
+	antlrcpp::Any visitImmediate_lreal_fp_number(STLanguageParser::Immediate_lreal_fp_numberContext* ctx) override {
+		ConvertResult res;
+		res.pScript = new string("TODF(" + ctx->TOKEN_FP_NUMBER()->toString() + ")");
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_real_fp_number(STLanguageParser::Immediate_real_fp_numberContext* ctx) override {
+		ConvertResult res;
+		res.pScript = new string("TOF(" + ctx->TOKEN_FP_NUMBER()->toString() + ")");
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_int_dec_number(STLanguageParser::Immediate_int_dec_numberContext* ctx) override {
+		ConvertResult res;
+		res.pScript = new string("TOS(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_uint_dec_number(STLanguageParser::Immediate_uint_dec_numberContext* ctx) override {
+		ConvertResult res;
+		res.pScript = new string("TOU(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_dint_dec_number(STLanguageParser::Immediate_dint_dec_numberContext* ctx) override {
+		ConvertResult res;
+		res.pScript = new string("TOL(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
+		res.success = true;
+		return res;
+	}
+
+	antlrcpp::Any visitImmediate_udint_dec_number(STLanguageParser::Immediate_udint_dec_numberContext* ctx) override {
+		ConvertResult res;
+		res.pScript = new string("TOD(" + ctx->TOKEN_DEC_NUMBER()->toString() + ")");
+		res.success = true;
+		return res;
+	}
 };
 
 
@@ -501,6 +539,7 @@ public:
 
 const string strTestFileList[] =
 {
+	"../test/test_type_expr.txt",
 	"../test/test_statement_input.txt",
 	"../test/expr_value.txt",
 	"../test/debug.txt",

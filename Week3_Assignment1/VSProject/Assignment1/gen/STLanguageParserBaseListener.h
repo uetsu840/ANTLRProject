@@ -127,6 +127,24 @@ public:
   virtual void enterImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext * /*ctx*/) override { }
   virtual void exitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext * /*ctx*/) override { }
 
+  virtual void enterImmediate_lreal_fp_number(STLanguageParser::Immediate_lreal_fp_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_lreal_fp_number(STLanguageParser::Immediate_lreal_fp_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_real_fp_number(STLanguageParser::Immediate_real_fp_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_real_fp_number(STLanguageParser::Immediate_real_fp_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_int_dec_number(STLanguageParser::Immediate_int_dec_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_int_dec_number(STLanguageParser::Immediate_int_dec_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_uint_dec_number(STLanguageParser::Immediate_uint_dec_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_uint_dec_number(STLanguageParser::Immediate_uint_dec_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_dint_dec_number(STLanguageParser::Immediate_dint_dec_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_dint_dec_number(STLanguageParser::Immediate_dint_dec_numberContext * /*ctx*/) override { }
+
+  virtual void enterImmediate_udint_dec_number(STLanguageParser::Immediate_udint_dec_numberContext * /*ctx*/) override { }
+  virtual void exitImmediate_udint_dec_number(STLanguageParser::Immediate_udint_dec_numberContext * /*ctx*/) override { }
+
   virtual void enterVariable(STLanguageParser::VariableContext * /*ctx*/) override { }
   virtual void exitVariable(STLanguageParser::VariableContext * /*ctx*/) override { }
 

@@ -93,6 +93,18 @@ public:
 
     virtual antlrcpp::Any visitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext *context) = 0;
 
+    virtual antlrcpp::Any visitImmediate_lreal_fp_number(STLanguageParser::Immediate_lreal_fp_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_real_fp_number(STLanguageParser::Immediate_real_fp_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_int_dec_number(STLanguageParser::Immediate_int_dec_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_uint_dec_number(STLanguageParser::Immediate_uint_dec_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_dint_dec_number(STLanguageParser::Immediate_dint_dec_numberContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate_udint_dec_number(STLanguageParser::Immediate_udint_dec_numberContext *context) = 0;
+
     virtual antlrcpp::Any visitVariable(STLanguageParser::VariableContext *context) = 0;
 
 

@@ -89,7 +89,7 @@ case_statement
     ;
 
 case_one_selection
-    : token_case_label+ statement+
+    : token_case_label statement*
     ;
 
 token_case_label
@@ -187,11 +187,17 @@ value
     ;
 
 immediate
-    : TOKEN_DEC_NUMBER      #immediate_dec_number
-    | TOKEN_HEX_NUMBER      #immediate_hex_number
-    | TOKEN_OCT_NUMBER      #immediate_oct_number
-    | TOKEN_BIN_NUMBER      #immediate_bin_Number
-    | TOKEN_FP_NUMBER       #immediate_fp_number
+    : TOKEN_DEC_NUMBER                                  #immediate_dec_number
+    | TOKEN_HEX_NUMBER                                  #immediate_hex_number
+    | TOKEN_OCT_NUMBER                                  #immediate_oct_number
+    | TOKEN_BIN_NUMBER                                  #immediate_bin_Number
+    | TOKEN_FP_NUMBER                                   #immediate_fp_number
+    | TOKEN_TYPE_LREAL TOKEN_SHARP TOKEN_FP_NUMBER      #immediate_lreal_fp_number
+    | TOKEN_TYPE_REAL TOKEN_SHARP TOKEN_FP_NUMBER       #immediate_real_fp_number
+    | TOKEN_TYPE_INT TOKEN_SHARP TOKEN_DEC_NUMBER       #immediate_int_dec_number
+    | TOKEN_TYPE_UINT TOKEN_SHARP TOKEN_DEC_NUMBER      #immediate_uint_dec_number
+    | TOKEN_TYPE_DINT TOKEN_SHARP TOKEN_DEC_NUMBER      #immediate_dint_dec_number
+    | TOKEN_TYPE_UDINT TOKEN_SHARP TOKEN_DEC_NUMBER     #immediate_udint_dec_number
     ;
 
 variable

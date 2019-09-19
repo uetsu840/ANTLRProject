@@ -24,8 +24,10 @@ public:
     TOKEN_DEC_NUMBER = 37, TOKEN_OCT_NUMBER = 38, TOKEN_BIN_NUMBER = 39, 
     TOKEN_FP_NUMBER = 40, TOKEN_CASE_RANGE = 41, TOKEN_PLUS = 42, TOKEN_MINUS = 43, 
     TOKEN_MUL = 44, TOKEN_DIV = 45, TOKEN_ARG_LBL_SEP = 46, TOKEN_CASE_LBL_SEP = 47, 
-    TOKEN_AND = 48, TOKEN_XOR = 49, TOKEN_OR = 50, STATEMENT_SEPARATOR = 51, 
-    IDENTIFIER = 52, NL = 53, NOT_NL = 54, END_COMMENT = 55, COMMENT = 56
+    TOKEN_AND = 48, TOKEN_XOR = 49, TOKEN_OR = 50, TOKEN_TYPE_LREAL = 51, 
+    TOKEN_TYPE_REAL = 52, TOKEN_TYPE_INT = 53, TOKEN_TYPE_UINT = 54, TOKEN_TYPE_DINT = 55, 
+    TOKEN_TYPE_UDINT = 56, TOKEN_TYPE_BOOL = 57, TOKEN_SHARP = 58, STATEMENT_SEPARATOR = 59, 
+    IDENTIFIER = 60, NL = 61, NOT_NL = 62, END_COMMENT = 63, COMMENT = 64
   };
 
   enum {
@@ -364,8 +366,7 @@ public:
   public:
     Case_one_selectionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<Token_case_labelContext *> token_case_label();
-    Token_case_labelContext* token_case_label(size_t i);
+    Token_case_labelContext *token_case_label();
     std::vector<StatementContext *> statement();
     StatementContext* statement(size_t i);
 
@@ -689,10 +690,75 @@ public:
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
+  class  Immediate_dint_dec_numberContext : public ImmediateContext {
+  public:
+    Immediate_dint_dec_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_TYPE_DINT();
+    antlr4::tree::TerminalNode *TOKEN_SHARP();
+    antlr4::tree::TerminalNode *TOKEN_DEC_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_real_fp_numberContext : public ImmediateContext {
+  public:
+    Immediate_real_fp_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_TYPE_REAL();
+    antlr4::tree::TerminalNode *TOKEN_SHARP();
+    antlr4::tree::TerminalNode *TOKEN_FP_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  Immediate_dec_numberContext : public ImmediateContext {
   public:
     Immediate_dec_numberContext(ImmediateContext *ctx);
 
+    antlr4::tree::TerminalNode *TOKEN_DEC_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_lreal_fp_numberContext : public ImmediateContext {
+  public:
+    Immediate_lreal_fp_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_TYPE_LREAL();
+    antlr4::tree::TerminalNode *TOKEN_SHARP();
+    antlr4::tree::TerminalNode *TOKEN_FP_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_udint_dec_numberContext : public ImmediateContext {
+  public:
+    Immediate_udint_dec_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_TYPE_UDINT();
+    antlr4::tree::TerminalNode *TOKEN_SHARP();
+    antlr4::tree::TerminalNode *TOKEN_DEC_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_int_dec_numberContext : public ImmediateContext {
+  public:
+    Immediate_int_dec_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_TYPE_INT();
+    antlr4::tree::TerminalNode *TOKEN_SHARP();
     antlr4::tree::TerminalNode *TOKEN_DEC_NUMBER();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -705,6 +771,19 @@ public:
     Immediate_hex_numberContext(ImmediateContext *ctx);
 
     antlr4::tree::TerminalNode *TOKEN_HEX_NUMBER();
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Immediate_uint_dec_numberContext : public ImmediateContext {
+  public:
+    Immediate_uint_dec_numberContext(ImmediateContext *ctx);
+
+    antlr4::tree::TerminalNode *TOKEN_TYPE_UINT();
+    antlr4::tree::TerminalNode *TOKEN_SHARP();
+    antlr4::tree::TerminalNode *TOKEN_DEC_NUMBER();
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
 
