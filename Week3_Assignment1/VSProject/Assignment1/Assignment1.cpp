@@ -419,8 +419,7 @@ public:
 	}
 
 	antlrcpp::Any visitImmediate_fp_number(STLanguageParser::Immediate_fp_numberContext* ctx) override {
-
-		return ConvertResult{ true, ctx->getText() };
+		return ConvertResult{ true, "#" + ctx->getText() };
 	}
 
 	antlrcpp::Any visitImmediate_lreal_fp_number(STLanguageParser::Immediate_lreal_fp_numberContext* ctx) override {
